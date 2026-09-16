@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>وين الكابيانز؟ 🇸🇦 — اليوم الوطني ٩٦</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.3/confetti.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<style>
+  :root{
+    --kabi-blue:#216AB1; --kabi-turquoise:#1EAFD9; --kabi-topaz:#0EB3AE;
+    --kabi-green:#3BB691; --kabi-teal:#70CCD8; --kabi-meteorite:#3D3185;
+    --saudi-green:#0B7A3E;
+    --bg:#F4F8FB; --card:#FFFFFF; --text:#0E2438; --muted:#5A7086;
+    --line:#DCE7F0;
+    --screen-bg1:#0D1B3E; --screen-bg2:#123A63;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0E1726; --card:#16233A; --text:#EAF2FA; --muted:#9FB4C8; --line:#26374F;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0E1726; --card:#16233A; --text:#EAF2FA; --muted:#9FB4C8; --line:#26374F;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  .sa-flag{
+    display:inline-block; width:1.3em; height:.97em; vertical-align:-.1em;
+    background:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGlkPSJmbGFnLWljb25zLXNhIiB2aWV3Qm94PSIwIDAgNjQwIDQ4MCI+CiAgPGRlZnM+CiAgICA8Y2xpcFBhdGggaWQ9InNhLWEiPgogICAgICA8cGF0aCBmaWxsLW9wYWNpdHk9Ii43IiBkPSJNLTg1LjMgMGg2ODIuNnY1MTJILTg1LjN6Ii8+CiAgICA8L2NsaXBQYXRoPgogIDwvZGVmcz4KICA8ZyBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcGF0aD0idXJsKCNzYS1hKSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODApc2NhbGUoLjkzNzUpIj4KICAgIDxwYXRoIGZpbGw9IiMxNjVkMzEiIGQ9Ik0tMTI4IDBoNzY4djUxMmgtNzY4eiIvPgogICAgPHBhdGggZmlsbD0iI2ZmZiIgZD0iTTY1LjUgMTQ1LjFjLS44IDEyLTIgMzMgOC4zIDM1LjIgMTIuMyAxLjIgNS41LTIwLjggMTAtMjQuOC44LTIgMi4zLTIgMi40LjV2MTguN2MwIDYgNCA3LjggNyA5IDMuMi0uMiA1LjQgMCA2LjYgM2wxLjYgMzIuM3M3LjQgMi4yIDcuOC0xOC4xYy4zLTEyLTIuNC0yMS45LS44LTI0LjIgMC0yLjMgMy0yLjQgNS0xLjMgMy4yIDIuMiA0LjYgNSA5LjYgNCA3LjYtMi4yIDEyLjItNS45IDEyLjMtMTEuN2E0NyA0NyAwIDAgMC0zLjUtMTYuNmMuNC0xLTEuNC0zLjctMS00LjcgMS4zIDIuMiAzLjQgMiAzLjggMC0xLjMtNC4yLTMuMy04LjMtNi41LTEwLTIuNy0yLjQtNi43LTItOCAzLS44IDUuNyAyIDEyLjQgNi4xIDE4IC45IDIuMSAyLjEgNS43IDEuNiA4LjlxLTMuNCAxLjgtNi4zLTEuMnMtNi00LjUtNi01LjZjMS42LTEwLjIuMy0xMS40LS42LTE0LjMtLjYtMy45LTIuNS01LjItNC03LjgtMS41LTEuNi0zLjUtMS42LTQuNSAwLTIuNyA0LjYtMS40IDE0LjUuNSAxOSAxLjQgNC4xIDMuNSA2LjcgMi41IDYuNy0uOCAyLjMtMi41IDEuNy0zLjgtMWE2NyA2NyAwIDAgMS0yLjEtMTcuNGMtLjUtNC42LTEuMS0xNC40LTQuMi0xNy0xLjgtMi40LTQuNS0xLjItNS41IDFhODIgODIgMCAwIDAgLjMgMTMuNGMyIDcuNCAyLjcgMTQgMy43IDIxLjUuMyAxMC4xLTUuOCA0LjQtNS41LS43YTQ1IDQ1IDAgMCAwLS4zLTE5LjRjLTEtMi42LTIuMS0zLjItNC42LTIuOC0xLjkgMC02LjggNS4zLTguMiAxNC4zIDAgMC0xLjIgNC42LTEuNyA4LjctLjcgNC42LTMuNyA4LTUuOS0uNi0xLjgtNi4zLTMtMjEuNi02LTE4eiIvPgogICAgPHBhdGggZmlsbD0iI2ZmZiIgZD0ibTk5IDE5NC4yLTMyIDE1LjRjLjMtNy4zIDE1LjEtMjAuNCAyNS4zLTIwLjUgNi41LjEgNC45IDIuNSA2LjYgNS4xeiIvPgogICAgPHBhdGggZmlsbD0iI2ZmZiIgZD0iTTkzLjMgMjA0LjJjLTE2LjggNDMuNSAzOS41IDQ5LjYgNDUuOCAxLjguNi0yIDMtMy45IDMuNC0uNy0xLjMgNDMuMy00My42IDQ2LjItNTAuOCAzMi42YTQyIDQyIDAgMCAxLTIuNS0xNC42Yy0xLTguNS01LjUtNS4yLTYuMiAzLjItLjcgNC43LS41IDYtLjUgMTAuNSAyLjIgMzQuMiA1Ni43IDE5LjUgNjUuNi04LjcgNC43LTE1LjYtLjgtMjcuMSAxLjctMjcuMSA1LjQgNS44IDEzIC44IDE0LjctMS4yLjctMSAyLjUtMS43IDMuNy0uNCA0LjIgMyAxMS42IDEuNiAxMy4yLTMuN3ExLjQtOCAxLjgtMTYuMmMtMy41IDEtNiAxLjctNi4zIDMuMmwtLjcgNC42Yy0uMyAxLjUtMy4yIDEuNS0zLjQtLjQtMS4zLTYtNi43LTYuNy0xMCAyLjUtMi4xIDEuOC02LjEgMi4yLTYuNS0uNS41LTYuMi0yLTctNy00LjFsLTQuOC0zNi4yYzIgMCA0IDEuNSA1LjktLjktMi02LjUtNi41LTE5LjctOS0yMC43LTEuMS0xLjQtMi4xLS41LTMuNy0uMS0yLjYuOC01IDMtNC4yIDcuNCAzIDE4LjggNSAzMy4xIDguMSA1MiAuNSAyLjEtMS4zIDUtMy43IDQuNy00LTIuNy01LTguMi0xMi04LTUgMC0xMC42IDUuNS0xMS4zIDEwLjctLjkgNC4yLTEuMiA4LjcgMCAxMi4zIDMuNSA0LjIgNy43IDMuOCAxMS40IDIuOSAzLTEuMyA1LjUtNC4zIDYuNi0zLjYuNy45LjEgMTAuOS0xNC4zIDE4LjUtOC43IDQtMTUuNyA0LjgtMTkuNC0yLjMtMi4zLTQuNS4yLTIxLjQtNS42LTE3LjUiLz4KICAgIDxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0xNjUgMTYwYzMuMy0xLjIgMTkuMy0xOS42IDE5LjMtMTkuNmwtMi40LTJxLTEuMy0xLjEgMC0yLjJjNC0yLjQgMi43LTcuNC43LTkuOGExMCAxMCAwIDAgMC04LjcuMWMtMi44IDIuNy0zLjQgNy0xLjIgOS42IDIuMSAxIDQuMiAzLjIgMi44IDQuNC02LjYgNy0yNC41IDE5LjEtMjIuNCAxOS41LjQuNiAxMS41LjYgMTEuOCAwem0tOTcgNjVjLTYgOS42LTYuNSAyMy45LTMuMiAyOC4yIDEuOCAyIDQuNyAyLjkgNi44IDIuMiAzLjgtMS42IDUuNS05LjMgNC42LTEycS0xLjgtMy0zLjYtLjdjLTIuNiA1LjQtMy43IDEuNy00LTEuM2E3MCA3MCAwIDAgMSAuOC0xNS4yYy43LTQuMiAwLTMtMS40LTEuMm0yNTcuMS0xNS4zYy01LjgtMTIuNi0xMy45LTI1LTE2LjQtMjkuN2E1NTggNTU4IDAgMCAwLTI0LjgtMzZjLTYuMi03LjQgMTAuMiAzLjEtMi0xMS43bC04LjktNy41Yy0yLTEuNC02LjgtNC03LjYuMi0uNCAzLjgtLjIgNS44LjQgOC45LjUgMiAzLjUgNS41IDUgNy41YTU2NSA1NjUgMCAwIDEgNTMuOCA4Ni41YzIuNi0xLjMgMi0xNi4xLjUtMTguMiIvPgogICAgPHBhdGggZmlsbD0iI2ZmZiIgZD0iTTI5OS42IDI1MS41Yy0xLjIgMS4zIDIuOCA2LjggOCA2LjggOC42LTEgMTYuMi01LjggMjMuMi0xOC42YTMzIDMzIDAgMCAwIDUuMy0xNC4yIDMxNyAzMTcgMCAwIDAtNS44LTcyLjRjLS4zLTIgMC00LjQuMi01IC42LS43IDIuNSAwIDMuNS0xLjcgMS41LTEuNS00LTE0LTctMTguNy0xLTIuMi0xLjUtMy42LTMuMy4yYTI3IDI3IDAgMCAwLTMgMTMuNmM0LjEgMjguNSA1LjQgNTMuNCA4IDgxLjkuMyAyLjgtLjEgNi44LTIgOC40YTgwIDgwIDAgMCAxLTI3LjEgMTkuN20xMTYuNS0uMWMtNi4yIDMuNi02LjIgNy43LTEuMiA3LjggOC42LTEgMTguOC0xLjcgMjUuOC0xMi4zYTQxIDQxIDAgMCAwIDQuMi0xNiAzMDMgMzAzIDAgMCAwLTQuNy03MS40Yy0uMi0yLTEuMS02LjctLjgtNy4zLjYtMS40IDMuNC4xIDQuNC0xLjUgMS40LTEuNS03LjMtMTIuNy0xMC40LTE3LjUtMS0yLjItMS40LTMuNi0zLjMuMmEyMiAyMiAwIDAgMC0xLjggMTMuNmM0LjYgMzEgOCA1NC4yIDguNyA4MS42LS40IDIuNi0uNSA0LTEuNyA3LjMtMi43IDMuNC01LjcgNy44LTguNSA5LjktMi44IDItOC44IDQtMTAuNyA1LjYiLz4KICAgIDxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik00MjAuNyAyMjMuN3EuMS0xMC45LS4xLTE5YTM0IDM0IDAgMCAwLTMtMTMuNWMtMS44LTQuMS0uNy03LjQtMS42LTExLjgtLjgtNC40LS42LTExLTEuOC0xNi4xLS40LTItMS40LTguNS0xLjEtOS4yLjUtMS40IDIuNCAwIDMuNC0xLjYgMS40LTEuNS01LTE4LTguMi0yMi43LTEuMS0yLjEtMy4zLTEuNC01LjggMi0yLjUgMi4zLTEuNiA3LjQtLjYgMTIuMyA2LjEgMzIuMyAxMC44IDYxLjYgOS44IDkyLjMtLjQgMi42IDktNy44IDktMTIuN20tNDUuNy00MGMtMy45LS4yLTEyLTcuNy0xNC40LTEyYTggOCAwIDAgMSAuNC02LjVjMS41LTEgMy43LTIgNS40LTEgMCAwIDEuNyAyLjQgMS40IDIuNyAyIDEgMyAuNSAzLjItLjQuMS0xLjUtLjYtMi40LS42LTQgLjktNC42IDYtNS4zIDgtMi40IDEuNCAxLjggMiA1LjUgMi4xIDggMCAxLjMtMi0uMi0zLjMgMC0xLjEuNC0xLjQgMS44LTEuNSAzLS4yIDMuMy0uNiA4LjYtLjcgMTIuNXptLTcxLjggNDhjMS05LjgtLjQtMjcuMy0uNS0zMy4xQTQ3NyA0NzcgMCAwIDAgMjk5IDE1NGMtMS4yLTguNCAzLjQuOSAyLjgtNC0xLjUtOC4zLTYuMS0xNC0xMS42LTIxLjUtMS43LTIuNS0xLjctMy00LjQuNi0zIDYuNy0uNCAxMS40LjQgMTYuNyAzLjkgMTcuMiA2LjIgMzMgNy4zIDQ4LjdhMzkzIDM5MyAwIDAgMSAuNCA0OWMzIC4xIDcuNi00LjcgOS4zLTExLjgiLz4KICAgIDxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik00MzQgMjE2Yy02LjktMTEuNi0xNy4yLTI0LTIwLTI4LjdhNjU4IDY1OCAwIDAgMC0yOS4yLTM3LjhjLTguNS05IDQtMS41LTEuNi04LjUtNC43LTUuMS02LTYuOC0xMC4xLTkuOS0yLTEuMy0zLjItMy44LTQgLjVhODMgODMgMCAwIDAtLjIgMTEuMmMwIDEuNyAxLjggNSAzLjQgNyAyMC43IDI1LjUgNDMuNCA1MS41IDYxLjYgODQuMiAyLjYtMS4zIDEuNy0xNiAwLTE4eiIvPgogICAgPHBhdGggZmlsbD0iIzE2NWQzMSIgZD0iTTEyMi42IDE5NC43Yy0uNS45LTEuNiAyLTEuMiAzLjFxMSAxLjQgMi42IDEuM2MxLjEgMCAyLjcuMyAzLS4zcTEtMS4yLjYtMy4zYy0xLjItMy00LjQtMS44LTUtLjgiLz4KICAgIDxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0zNTQuMiAzNjIuNWM5LjIuNCAxNS4yLjUgMjMuMyAxLjRsOS42LTFjMTAuNi0xIDExIDE1LjEgMTEgMTUuMSAwIDkuNS0zLjcgMTAtOC40IDExLTIuNy40LTQtMS42LTUuNS0zLjZhMTQgMTQgMCAwIDEtNyAuNGwtMTEuNS0uNWMtNC0uMy02LjIuNS0xMC4zLjEtLjggMS4zLTIgMy4xLTQuNCAyLjYtMi0uMy00LjUtNi0zLjgtMTAuNSAxLjUtMy4yIDEtMi4xIDEtMy41LTM3LjYtMS03NS41LTIuNy0xMTIuMy0yLjItMjguOC4xLTU3LjIgMS4zLTg1LjcgMi41LTE1LjItLjItMjYuOC0yLjYtMzQuOC0xNC4zLjggMCAzOC44IDIuMSA0OS45IDEuNCAyMC41LS4yIDM5LjMtMS45IDYwLjItMi41IDQxLjIuNyA4Mi4xLjcgMTIzLjMgMy42LTQtMi43LTQtOSAyLTEwLjYuNS0uNC44IDMuMSAxLjcgMyA0LjktLjMgMi43IDYuMyAxLjcgNy42TTE4OC42IDEzNS4zYy02LjIgMTcuOCAzLjYgMzcuNCAxMC40IDM1LjUgNSAyIDgtNy40IDEwLTE3LjYgMS41LTIuOSAyLjUtMy4yIDMuMi0xLjctLjIgMTMuNiAxIDE2LjcgNC41IDIwLjggNy44IDYgMTQuMy44IDE0LjguM2w2LTYuMXEyLjItMi4yIDUuMS0uM2MxLjkgMS43IDEuNiA0LjYgNS42IDYuNiAzLjQgMS40IDEwLjUuNCAxMi4yLTIuNSAyLjItMy45IDIuOC01LjIgMy44LTYuNiAxLjYtMi4xIDQuMy0xLjIgNC4zLS41LS4zIDEuMi0xLjkgMi4zLS44IDQuNSAyIDEuNCAyLjQuNSAzLjUuMiA0LTIgNy0xMC42IDctMTAuNi4xLTMuMi0xLjctMy0yLjktMi4ybC0zLjEgMi4xYy0yIC4zLTUuNyAxLjYtNy42LTEuMy0xLjktMy40LTEuOS04LjMtMy4zLTExLjggMC0uMi0yLjYtNS41LS4yLTUuOCAxLjIuMiAzLjcuOSA0LjEtMS4yIDEuMi0yLjEtMi42LTgtNS4zLTExLTIuMy0yLjUtNS41LTIuOC04LjYtLjItMi4yIDItMS45IDQuMi0yLjMgNi4zYTEwIDEwIDAgMCAwIDIgOC43YzIuMiA0LjIgNi4xIDkuNyA0LjggMTcuNSAwIDAtMi4zIDMuNi02LjMgMy4xLTEuNy0uMy00LjQtMS01LjgtMTEuOC0xLjEtOCAuMi0xOS40LTMuMi0yNC43LTEuMy0zLjMtMi4yLTYuNC01LjItLjktLjggMi4yLTQuMyA1LjUtMS44IDEyLjJhMzYgMzYgMCAwIDEgMiAxOWMtMS41IDIuMi0xLjggMi45LTMuNyA1LTIuNiAzLTUuNSAyLjItNy43IDEuMS0yLTEuMy0zLjYtMi00LjYtNi41LjItNyAuNi0xOC41LS43LTIwLjktMS45LTMuOC01LTIuNC02LjMtMS4yYTQ4IDQ4IDAgMCAwLTExLjUgMjMuNWMtMS44IDUuOC0zLjcgNC4xLTUgMS44LTMuMi0zLTMuNS0yNi43LTcuNC0yMi44Ii8+CiAgICA8cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjA3LjQgMTc0LjFjMi45LTIgMS42LTMuNCA1LjguOGE3MiA3MiAwIDAgMSA5LjIgMzEuM2MtLjIgMi42IDEuNiA0LjIgMi41IDMuNi40LTYgMTUuMS0xNC40IDI4LjYtMTUuNiAyLS41IDEtNC40IDEuMy02LjQtLjgtNy41IDQuMi0xNC4zIDExLjItMTQuOCA5LjYgMS40IDEyLjggNi41IDEzIDE0LjItMS4xIDE1LTE2LjcgMTcuNS0yNS40IDE4LjctMS4zLjUtMS45IDEuMSAwIDEuOGwzNi42LjIgMS45IDFjLjIgMS0uNi4yLTIgMi42YTMwIDMwIDAgMCAwLTMuNyAxMS41Yy0xMC45IDMuNi0yMi4yIDUtMzMuNiA2LjUtNCAyLTYgNC43LTUuMiA3LjcgMS40IDMuMyAxMC4yIDYuNyAxMC4yIDYuOCAxLjcgMSAzLjYgMy41LS41IDguNi0xNy44LS44LTMxLjctOC40LTM2LjUtMTkuMS0xLjQtMS4xLTMgMC00IDEuNC03IDktMTMuOCAxNy0yNS43IDIxLjQtNyAxLjgtMTQuMy0xLjEtMTcuNy01LjctMi4zLTIuNy0yLjItNS42LTMtNi4yLTMuOSAxLjctMzYuOSAxNS43LTMyLjcgOS4xIDgtOC41IDIyLTE0LjkgMzQuMi0yMy4zLjktMi45IDIuNS0xMi41IDcuMy0xNS42LjMgMC0uNyA1LjYtLjYgOCAwIDItLjIgMi43LjIgMi4yLjktLjUgMTUuNy0xMi4yIDE3LTE1LjggMS40LTIgLjMtNy4yLjMtNy40LTIuOC03LjItNi43LTcuOC04LjEtMTEuNC0xLjMtNC43LS43LTEwLjEgMi0xMS43cTMuNy0zLjEgNy45LjVjMyAyLjcgNS42IDggNi40IDExLjktLjUgMS41LTQtMS01LS4zYTE2IDE2IDAgMCAxIDMuNyA3LjhjMiA4LjIgMS40IDExLjQtLjYgMTYuNy02LjYgMTMuOS0xNSAxOC0yMi40IDIzLjItLjIgMC0uMyAzLjUgMi40IDUuNCAxIDEgNC45IDEuNSA5LjQgMGE1NSA1NSAwIDAgMCAyMi4zLTIzLjMgNTEgNTEgMCAwIDAtMi40LTIyLjJjLTIuOS02LjctNi4zLTE2LjItNi4zLTE2LjQtLjEtNC4yLjItNS42IDItNy43bS05NS44LTM4LjZjNC4yIDIgMTIuMiAxLjEgMTEuOC01LjdsLS4yLTMuMWMtLjgtMi0zLjItMS41LTMuNy41LS4yLjcuMyAxLjgtLjMgMi4xLS40LjQtMS43LjItMS43LTEuN3EtLjEtMS0uNy0xLjYtLjItLjItLjktLjJjLS42IDAtLjYuMS0uOS42bC0uMyAxLjZxLS4xLjktLjggMWMtLjYgMC0uNSAwLTEtLjJxLS40LS4zLS41LTFsLS4zLTEuNnEtLjMtLjQtMS0uNmMtMi4zIDAtMi41IDIuNy0yLjMgMy43LS4yLjItLjMgNC45IDIuOCA2LjIiLz4KICAgIDxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0yMzUuMSAxODcuN2M0LjIgMiAxNC4zLjkgMTEuOC01LjZsLS4yLTMuMmMtLjktMi0zLjItMS41LTMuNy42LS4yLjYuMyAxLjctLjQgMi0uMy40LTEuNy4yLTEuNi0xLjZxLS4xLTEtLjctMS43LS4zLS4yLTEtLjJjLS41IDAtLjUuMi0uOC43cS0uMy43LS4zIDEuNi0uMi44LS45IDFjLS41IDAtLjQgMC0uOC0uM3EtLjUtLjMtLjYtLjlsLS4zLTEuNnEtLjMtLjUtMS0uNmMtMi4zIDAtMi41IDIuNi0yLjQgMy42LS4xLjItLjIgNSAzIDYuMnptNzItMjEuNmM0LjIgMiAxMi4xIDEuMSAxMS44LTUuNmwtLjItMy4yYy0uOS0yLTMuMi0xLjUtMy43LjUtLjIuNy4zIDEuOC0uNCAyLjItLjMuMy0xLjcuMS0xLjYtMS44cS0uMS0xLS43LTEuNi0uMy0uMi0xLS4ydC0uOC43bC0uMyAxLjVxLS4xIDEtLjkgMWMtLjggMC0uNCAwLS44LS4ycS0uNS0uMy0uNi0uOSAwLTEtLjMtMS43LS40LS40LTEtLjVjLTIuMyAwLTIuNSAyLjYtMi40IDMuNi0uMS4yLS4yIDQuOSAzIDYuMnptMzcuMyA1NC4zYy03LjMgOC4zLTQuMSAyMi0yLjQgMjUgMi40IDQuOCA0LjMgNy45IDkgMTAuMyA0LjMgMy4xIDcuNyAxLjIgOS41LTEgNC4zLTQuNSA0LjQtMTYgNi40LTE4LjIgMS40LTQuMiA1LTMuNSA2LjctMS42YTE3IDE3IDAgMCAwIDYuMiA1LjNjNCAzLjUgOC44IDQuMiAxMy42IDEgMy4yLTEuOSA1LjMtNC4yIDcuMi04LjkgMi01LjYgMS0zMS42LjUtNDdsLTQuMi0yMS41YzAtLjItLjUtMTAuMi0xLTEyLjUgMC0xLS4zLTEuMy43LTEuMiAxLjEgMSAxLjIgMSAyIDEuMyAxIC4yIDItMS43IDEuMy0zLjNsLTEwLTE4LjZjLS44LS44LTEuOS0xLjYtMy4yLjJhNyA3IDAgMCAwLTIuNCA1LjVsMS4zIDEzLjMgNCAyMi42YzEuMyAxNiAxLjYgMjkuMiAyLjkgNDUuMy0uMiA2LjgtMi4zIDEyLjctNC4zIDEzLjYgMCAwLTMgMS43LTUtLjItMS41LS42LTcuNC05LjktNy40LTkuOS0zLTIuNy01LTItNy4xIDAtNiA1LjgtOC42IDE2LjQtMTIuNyAyMy44LTEgMS43LTQgMy03LjItLjEtOC4yLTExLjMtMy40LTI3LjMtNC40LTIzLjJNMzA5IDEyNi43YzMuOCAxLjUgNi40IDkuMiA1LjYgMTMtLjggNC41LTIuOCA5LjUtNC4yIDguOS0xLjYtLjYgMS00LjYtLjUtOC44LS44LTIuOC02LTcuOC01LjQtOS4yLTEtMy4xIDIuMi00LjUgNC41LTR6Ii8+CiAgICA8cGF0aCBmaWxsPSIjZmZmIiBkPSJNMzU2LjYgMjI1Yy43LTkuMi0uNi0xNC44LS44LTIwLjJzLTYuMS00Ni42LTcuMy01MC42Yy0xLjUtNy44IDUuNy0xIDQuOS01LjYtMi41LTUuNi04LjYtMTMuOS0xMC41LTE4LjgtMS4yLTItLjctNC0zLjMtLjVhNDIgNDIgMCAwIDAtMi4zIDE5LjJjNi4yIDMyLjMgMTIuNSA1OS4xIDExLjUgODkuOCAzIDAgNi4zLTYuNyA3LjgtMTMuM202NC40LTg1LjNjMy41IDEuNyA1LjUgMTEuMyA1LjEgMTQtLjcgNS0yLjUgMTAuNC0zLjggOS43LTEuNS0uNi4zLTcuNC0uNC05LjUtLjgtMy01LjUtOC40LTUtMTAtMS0zLjQgMi00LjggNC4xLTQuMm0tMjU1LjcgNjcuOWMzLjMgMS4zIDUuMyA4LjMgNSAxMC4zLS44IDMuNy0yLjUgNy43LTMuOCA3LjEtMS4zLS40LjMtNS40LS4zLTctLjMtMy43LTQuOS01LjctNC44LTcuMy0uOC0zIDItMy41IDQtMy4xeiIvPgogICAgPHBhdGggZmlsbD0iIzE2NWQzMSIgZD0iTTI0NC45IDIxOC4yYzQuMi4yIDYuMyAzLjYgMi40IDUtNCAxLjMtNy43IDIuNC03LjggOCAxLjUgOC0yIDUuMi00IDQuMi0yLjQtMS44LTkuMi02LTEwLjItMTUtLjEtMi4xIDEuNi00IDQuMy00IDQgMS4xIDEwIDEuMiAxNS4zIDEuOCIvPgogICAgPHBhdGggZmlsbD0iI2ZmZiIgZD0iTTc3LjQgMTI0LjRjNC44IDEuNCA1LjEgOC42IDQuOCAxMC43LS43IDMuOC0yLjQgNy45LTMuNiA3LjQtMS40LS41IDAtNS43LS43LTcuMy0uNy0yLjItNC44LTYuNC00LjQtNy42LS45LTIuNSAyLTMuNyAzLjktMy4ybTk1LjkgMzMuNmMtMy44IDItNS4yIDgtMi45IDExLjYgMi4yIDMgNS42IDEuOSA2IDEuOSAzLjcuNCA1LjktNi45IDUuOS02LjlzLjEtMi00LjIgMS45Yy0xLjkuMy0yLS40LTIuNS0xLjRhOSA5IDAgMCAxIC41LTUuN2MuNy0xLjgtLjctMi42LTIuOC0xLjRtMjgtMzYuNGMtMiAxLjMtNS43IDUuMi01LjggOS42LS4xIDIuNS0uNiAyLjUgMSA0IDEuMyAxLjggMi40IDEuNyA0LjguNGE1IDUgMCAwIDAgMi4zLTMuNGMuNi0yLjgtMyAxLjQtMy40LTEuOC0uOC0zIDEuNS00LjIgMy43LTcgMC0yIDAtMy4zLTIuNy0xLjh6bTIyLjQgNGE2MCA2MCAwIDAgMC0xLjYgMTEuMWMtLjYgMi44IDMgNCA0LjUuNCAyLjQtNi41IDIuNC05LjMgMi42LTEyLS43LTQuMy0zLjYtNC4yLTUuNS41bTE0MiA3Mi4zYy40LS41IDIwLTE0LjQgMjAtMTQuNCAyLS43IDEuNSA3LjIuNiA3LjFhNzggNzggMCAwIDEtMjAuNyAxNC4zYy0xIC43LTEuOS01LjMgMC03em0xNy43LS4yYzMuNSAxLjcgNC45IDExLjggNC41IDE0LjUgMCA1LjQtMy4zIDkuNi00LjcgOS0xLjQtLjcuMi02LjctLjUtOC44LS44LTMtMy43LTguNS0zLjItMTAuMS0xLTMuNCAxLjgtNS4yIDQtNC42em0tMTE2IDQzLjRhMjYgMjYgMCAwIDEgNS42LTQuOWMyLTEgMy44LjggMy43LjcuMyAyLTEuMiAzLjctLjcgNi4zLjQgMSAuNyAyLjIgMi42IDEuOCAzLjEtMi41IDYtMi43IDktMi44IDIuNS4xIDIuNiA0LjIgMSA0LjItNS43IDEuMi04LjIgMi44LTEyLjMgNC4zLTIgMS4yLTMuNi0uMy0zLjYtLjRzLTEuMS0xLjEtLjQtMy43cS4zLTMuMi0yLjQtM2MtMS4yLjgtMi40IDEuMi0zLS4zcS0uNi0xLjQuNS0yLjJtMTM2LjYgNS40Yy44IDEgMS40IDItLjEgMy44bC0zLjcgMy4yYy0uNiAxLTEgMi44IDEgMy4zIDMuNiAxIDEyLTQuNSAxMi00LjYgMS40LTEgMS0zIC44LTMtLjgtLjktMi42LS4zLTMuOC0uNS0uNiAwLTIuNS0uMi0xLjYtMmExMSAxMSAwIDAgMCAxLjYtMi45cS45LTEuNy0yLTIuN2MtMi4xLS40LTMtLjItNS4zIDBxLTEuNi4yLTEuOSAyLjNjLjEgMi4zIDEuNSAyLjIgMyAzeiIvPgogICAgPHBhdGggZmlsbD0iIzE2NWQzMSIgZD0iTTI2OC4xIDE4OS43Yy0uNSAxLTIuMyAxLTQgMHMtMi43LTIuNi0yLjEtMy41IDIuMy0uOSA0IDAgMi42IDIuNiAyLjEgMy41bS04OS01My42Yy0xIC4zLTIuNC0uNi0zLTJzLS4zLTIuNi43LTIuOSAyLjMuNyAzIDIgLjMgMi43LS44IDN6TTM1NS4yIDM3NWM5LjQuNCAxOC4yIDAgMjcuNS41IDEuNyAxLjUuNSA1LS42IDQuOGwtNy44LS4zYy0uMS0zLTcuNy0yLjUtNy41LjEtNC4xLjUtNy44LS4xLTEyLS4zLTEuMi0xLjUtMS00LjIuNC00LjgiLz4KICA8L2c+Cjwvc3ZnPgo=") center/cover no-repeat;
+    border-radius:.12em; box-shadow:0 1px 4px rgba(0,0,0,.25);
+  }
+  html,body{margin:0; padding:0;}
+  body{
+    font-family:'Tajawal', 'Segoe UI', Tahoma, Arial, sans-serif;
+    background:var(--bg); color:var(--text); min-height:100vh;
+  }
+  .hidden{display:none !important;}
+  button{font-family:inherit;}
+
+  /* ---------- LANDING ---------- */
+  #landing{
+    min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:24px; text-align:center;
+    background:linear-gradient(160deg, var(--kabi-meteorite), var(--kabi-blue) 55%, var(--kabi-topaz));
+    color:#fff;
+  }
+  #landing .flag{font-size:64px; margin-bottom:8px;}
+  #landing h1{font-size:clamp(28px,5vw,46px); font-weight:900; margin:0 0 6px;}
+  #landing p{font-size:clamp(15px,2.2vw,20px); opacity:.9; margin:0 0 34px; max-width:560px;}
+  .mode-btns{display:flex; gap:18px; flex-wrap:wrap; justify-content:center;}
+  .mode-btn{
+    background:rgba(255,255,255,.12); border:2px solid rgba(255,255,255,.55); color:#fff;
+    border-radius:20px; padding:26px 34px; font-size:20px; font-weight:800; cursor:pointer;
+    min-width:230px; transition:transform .15s, background .15s; backdrop-filter:blur(4px);
+  }
+  .mode-btn:hover,.mode-btn:active{transform:translateY(-3px); background:rgba(255,255,255,.24);}
+  .mode-btn small{display:block; font-weight:500; font-size:13.5px; opacity:.85; margin-top:6px;}
+
+  /* ---------- VOTE (mobile) ---------- */
+  #vote{min-height:100vh; display:flex; flex-direction:column; max-width:640px; margin:0 auto; padding:20px 16px 28px;}
+  .k-head{text-align:center; margin-bottom:12px;}
+  .k-badge{
+    display:inline-block; background:linear-gradient(90deg,var(--saudi-green),var(--kabi-topaz));
+    color:#fff; font-weight:800; font-size:13px; padding:6px 16px; border-radius:999px; margin-bottom:10px;
+  }
+  .k-head h1{font-size:clamp(25px,6.5vw,36px); font-weight:900; margin:0; color:var(--kabi-blue);}
+  .k-head p{color:var(--muted); margin:7px 0 0; font-size:15.5px;}
+  .k-card{background:var(--card); border:1px solid var(--line); border-radius:20px; padding:18px; box-shadow:0 8px 30px rgba(33,106,177,.08); margin-top:12px;}
+  .k-label{font-weight:800; font-size:17px; margin:0 0 12px; text-align:center;}
+  .regions{display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px;}
+  .region-btn{
+    border:2px solid var(--line); background:var(--bg); color:var(--text);
+    border-radius:15px; padding:13px 6px; font-size:15.5px; font-weight:700; cursor:pointer;
+    transition:all .13s; text-align:center; line-height:1.35;
+  }
+  .region-btn .em{display:block; font-size:22px; margin-bottom:3px;}
+  .region-btn.sel{border-color:var(--kabi-blue); background:var(--kabi-blue); color:#fff; transform:scale(1.05); box-shadow:0 6px 18px rgba(33,106,177,.35);}
+  #submitBtn{
+    margin-top:16px; width:100%; border:none; border-radius:16px; padding:17px;
+    font-size:19px; font-weight:900; color:#fff; cursor:pointer;
+    background:linear-gradient(90deg,var(--kabi-blue),var(--kabi-topaz));
+    transition:opacity .15s, transform .1s;
+  }
+  #submitBtn:disabled{opacity:.45; cursor:not-allowed;}
+  #submitBtn:not(:disabled):active{transform:scale(.985);}
+  #voteMsg{margin-top:12px; text-align:center; font-weight:700; font-size:15.5px; min-height:22px;}
+  #voteMsg.err{color:#D64545;}
+  #citySearch{
+    width:100%; font-family:inherit; font-size:18px; font-weight:600; padding:14px 16px;
+    border:2px solid var(--line); border-radius:14px; background:var(--bg); color:var(--text); outline:none;
+  }
+  #citySearch:focus{border-color:var(--kabi-turquoise);}
+  .city-list{
+    margin-top:10px; max-height:305px; overflow-y:auto; display:flex; flex-wrap:wrap; gap:8px;
+    padding:2px;
+  }
+  .city-btn{
+    border:1.5px solid var(--line); background:var(--bg); color:var(--text);
+    border-radius:999px; padding:9px 15px; font-size:15px; font-weight:700; cursor:pointer; transition:all .12s;
+  }
+  .city-btn small{color:var(--muted); font-weight:500; font-size:12px;}
+  .city-btn.sel, .city-btn:active{border-color:var(--kabi-blue); background:var(--kabi-blue); color:#fff;}
+  .city-btn.sel small{color:#CFE6FA;}
+  .no-city{color:var(--muted); font-weight:600; padding:8px 4px; font-size:14.5px;}
+  .city-group{
+    width:100%; font-size:13px; font-weight:800; color:var(--kabi-blue);
+    margin:6px 0 0; padding-top:6px; border-top:1px dashed var(--line);
+  }
+  .city-group:first-child{border-top:none; margin-top:0; padding-top:0;}
+  .picked{
+    margin-top:12px; background:linear-gradient(90deg,var(--kabi-blue),var(--kabi-topaz)); color:#fff;
+    border-radius:14px; padding:13px 16px; font-weight:800; font-size:16.5px; text-align:center;
+    animation:pop .35s cubic-bezier(.2,1.5,.4,1);
+  }
+  .link-btn{
+    display:block; margin:12px auto 0; background:none; border:none; color:var(--kabi-blue);
+    font-size:14px; font-weight:700; cursor:pointer; text-decoration:underline;
+  }
+  .regions{margin-top:10px;}
+
+  /* thank-you state (also shown for already-voted devices) */
+  #votedState{
+    min-height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:26px;
+    background:linear-gradient(160deg,var(--saudi-green),var(--kabi-topaz) 60%, var(--kabi-blue)); color:#fff;
+  }
+  #votedState .box{max-width:560px; animation:pop .5s cubic-bezier(.2,1.6,.4,1);}
+  #votedState .big{font-size:74px;}
+  #votedState h2{font-size:clamp(26px,7vw,40px); font-weight:900; margin:10px 0;}
+  #votedState p{font-size:18px; opacity:.95; margin:6px 0 0; line-height:1.7;}
+  @keyframes pop{from{transform:scale(.6); opacity:0;} to{transform:scale(1); opacity:1;}}
+
+  /* ---------- SCREEN ---------- */
+  #screen{
+    min-height:100vh; display:flex; flex-direction:column;
+    background:radial-gradient(1200px 700px at 75% -10%, #1D5E96 0%, var(--screen-bg2) 40%, var(--screen-bg1) 100%);
+    color:#fff; overflow:hidden;
+  }
+  .s-head{display:flex; align-items:center; justify-content:space-between; padding:20px 34px 6px; flex-wrap:wrap; gap:10px;}
+  .s-title h1{font-size:clamp(26px,3.4vw,46px); font-weight:900; margin:0; line-height:1.2;}
+  .s-title h1 span{background:linear-gradient(90deg,#7FE3C1,var(--kabi-teal)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .s-title p{margin:4px 0 0; color:#BFD6EA; font-size:clamp(13px,1.4vw,18px); font-weight:500;}
+  .s-total{
+    text-align:center; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18);
+    border-radius:20px; padding:10px 30px; backdrop-filter:blur(6px);
+  }
+  .s-total .num{font-size:clamp(34px,4.4vw,62px); font-weight:900; line-height:1; color:#8FF0CE; font-variant-numeric:tabular-nums;}
+  .s-total .lbl{font-size:clamp(12px,1.2vw,16px); color:#CFE3F4; font-weight:700;}
+  .s-body{flex:1; display:flex; gap:12px; padding:6px 22px 8px; min-height:0;}
+  .s-map{flex:1.6; position:relative; min-width:0;}
+  .s-map svg{width:100%; height:100%; max-height:calc(100vh - 190px); display:block;}
+  .s-side{flex:1; display:flex; flex-direction:column; gap:12px; min-width:300px; max-width:430px; padding-top:8px; min-height:0;}
+  .qr-card{
+    background:rgba(255,255,255,.09); border:1px solid rgba(255,255,255,.18); border-radius:18px;
+    padding:14px 16px; display:flex; align-items:center; gap:16px;
+  }
+  .qr-box{background:#fff; border-radius:12px; padding:8px; flex:none; display:flex;}
+  .qr-box > div{display:flex;}
+  .qr-txt h3{margin:0 0 5px; font-size:clamp(16px,1.6vw,21px); font-weight:900; color:#fff;}
+  .qr-txt p{margin:0; font-size:clamp(12.5px,1.2vw,15px); color:#CFE3F4; line-height:1.65; font-weight:500;}
+  .lb{background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.15); border-radius:18px; padding:16px 18px; flex:1; overflow:hidden; min-height:120px;}
+  .lb h3{margin:0 0 12px; font-size:19px; font-weight:900; color:#CFE3F4;}
+  .lb-row{display:flex; align-items:center; gap:10px; margin-bottom:9px; font-weight:700;}
+  .lb-row .nm{width:122px; flex:none; font-size:15.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .lb-row .bar{flex:1; height:15px; background:rgba(255,255,255,.12); border-radius:99px; overflow:hidden;}
+  .lb-row .fill{height:100%; border-radius:99px; background:linear-gradient(90deg,var(--kabi-turquoise),#8FF0CE); transition:width .8s cubic-bezier(.2,.9,.3,1); min-width:4px;}
+  .lb-row .ct{width:72px; flex:none; text-align:left; font-size:14.5px; color:#CFE3F4; font-variant-numeric:tabular-nums;}
+  .s-ticker{
+    padding:8px 34px 18px; font-size:clamp(16px,1.9vw,25px); font-weight:800; text-align:center; min-height:52px; color:#EAF6FF;
+  }
+  .s-ticker .t-in{display:inline-block; animation:slideUp .55s cubic-bezier(.2,1.4,.4,1);}
+  @keyframes slideUp{from{transform:translateY(24px); opacity:0;} to{transform:translateY(0); opacity:1;}}
+  .region-path{stroke:#0E1D3F; stroke-width:1.4; transition:fill .7s;}
+  .cnt-bubble text{font-family:'Tajawal',sans-serif; text-anchor:middle;}
+  #dbWarn{
+    background:#B3261E; color:#fff; text-align:center; font-weight:700; padding:10px 16px; font-size:15px;
+  }
+  @media (max-width:860px){
+    .s-body{flex-direction:column; overflow:auto;}
+    .s-side{max-width:none;}
+    .s-map svg{max-height:50vh;}
+  }
+</style>
+</head>
+<body>
+
+<div id="dbWarn" class="hidden">⚠️ لم يتم ضبط إعدادات Firebase بعد — افتح ملف index.html وعبّئ FIREBASE_CONFIG (الخطوات في ملف التعليمات).</div>
+
+<!-- LANDING -->
+<div id="landing">
+  <div class="flag"><span class="sa-flag" style="width:88px;height:66px;border-radius:8px;"></span></div>
+  <h1>وين الكابيانز؟</h1>
+  <p>فعالية اليوم الوطني الـ96 — صوّر الباركود، اختر منطقتك، وشاهد خريطة المملكة تتلوّن مباشرة! تصويت مجهول، ومرة واحدة لكل جهاز.</p>
+  <div class="mode-btns">
+    <button class="mode-btn" onclick="location.hash='#vote'">📱 صوّت من جوالك<small>اختر منطقتك — بدون أسماء</small></button>
+    <button class="mode-btn" onclick="location.hash='#screen'">🖥️ شاشة العرض المباشر<small>الخريطة + باركود التصويت</small></button>
+  </div>
+</div>
+
+<!-- VOTE (mobile) -->
+<div id="vote" class="hidden">
+  <div class="k-head">
+    <div class="k-badge"><span class="sa-flag"></span> اليوم الوطني السعودي الـ96 × KABi</div>
+    <h1>أنت من وين بالضبط؟</h1>
+    <p>اكتب اسم مدينتك أو محافظتك — حتى الصغيرة 😉 والنظام يعرف منطقتها تلقائياً</p>
+  </div>
+  <div class="k-card">
+    <input id="citySearch" type="text" placeholder="🔍 ابحث: سدير، المجمعة، بلجرشي..." autocomplete="off">
+    <div id="cityList" class="city-list"></div>
+    <div id="pickedCity" class="picked hidden"></div>
+    <button id="regionToggle" class="link-btn">ما لقيت مدينتك؟ اختر منطقتك مباشرة ↓</button>
+    <div class="regions hidden" id="regionGrid"></div>
+    <button id="submitBtn" disabled>اختر مدينتك أولاً</button>
+    <div id="voteMsg"></div>
+  </div>
+</div>
+
+<!-- VOTED / THANK YOU -->
+<div id="votedState" class="hidden">
+  <div class="box">
+    <div class="big" id="votedEmoji">🎉</div>
+    <h2 id="votedTitle">تم احتساب صوتك!</h2>
+    <p id="votedSub">ارفع راسك للشاشة... منطقتك توّها زادت 🗺️💚</p>
+  </div>
+</div>
+
+<!-- SCREEN -->
+<div id="screen" class="hidden">
+  <div class="s-head">
+    <div class="s-title">
+      <h1>خريطة <span>المملكة</span> <span class="sa-flag"></span></h1>
+      <p>اليوم الوطني السعودي الـ96 — «عزّنا بطبعنا» · تتحدث مباشرة مع كل صوت</p>
+    </div>
+    <div class="s-total">
+      <div class="num" id="totalNum">0</div>
+      <div class="lbl">صوّتوا حتى الآن</div>
+    </div>
+  </div>
+  <div class="s-body">
+    <div class="s-map"><svg id="mapSvg" viewBox="0 0 730 600" xmlns="http://www.w3.org/2000/svg" aria-label="خريطة مناطق المملكة"></svg></div>
+    <div class="s-side">
+      <div class="qr-card">
+        <div class="qr-box"><div id="qrHolder"></div></div>
+        <div class="qr-txt">
+          <h3>📱 صوّر وصوّت!</h3>
+          <p>وجّه كاميرا جوالك على الباركود واختر منطقتك.<br>صوت واحد لكل جهاز — بدون أسماء.</p>
+        </div>
+      </div>
+      <div class="lb">
+        <h3>🏆 ترتيب الفرق</h3>
+        <div id="lbRows"><div style="color:#9FB8CE;font-weight:600;">بانتظار أول صوت... من أي منطقة راح يكون؟ 👀</div></div>
+        <div id="topCities" style="margin-top:10px; font-size:13.5px; color:#BFD6EA; font-weight:600; line-height:1.8;"></div>
+      </div>
+    </div>
+  </div>
+  <div class="s-ticker" id="ticker"></div>
+</div>
+
+<script>
+/* ====== MAP DATA (injected) ====== */
+const MAP_PATHS = [{"id":"najd","path":"M155.5 163L159 159L165.5 155.5L175.5 151L179.5 150L193 142.5L205.5 137L208.5 137.5L213 139.5L215.5 140L236.5 135L248.5 138.5L253.5 137.5L258 137L272.5 140.5L274.5 142.5L279 147.5L281.5 149L285.5 149L290 146.5L292.5 146L293.5 146.5L294 153L295.5 154.5L303 154.5L309 157.5L311.5 156.5L316.5 153.5L318 153L320 154.5L321 156L326 165.5L329 173.5L331 176L333.5 177L343.5 178.5L346.5 180L348.5 180.5L354.5 186L355.5 188L357.5 190L359 190.5L360.5 190L362 187.5L365.5 190L367.5 192L369 197.5L370 199L380.5 205L386 206L389.5 210L393.5 213.5L396 214L401.5 214.5L404.5 215L414.5 222L417 223L419.5 223.5L424 222.5L425.5 222.5L432 228.5L433.5 231L442 234.5L446 236.5L447 239L447.5 244L448 266.5L447.5 281.5L447.5 289L448.5 292.5L449.5 294.5L451.5 296.5L461 302.5L470.5 311.5L472 314L475 319.5L476.5 326.5L476.5 334L457 487L446.5 489.5L430.5 492L371.5 497L362.5 496.5L359.5 495.5L354 493.5L345.5 487.5L332 475.5L328 469L325.5 466.5L325 464.5L326.5 458.5L330 452.5L330 449.5L329 448L325 444L322 439.5L316.5 434.5L312 427L307.5 421L306.5 419.5L308.5 411L308 404L310 400.5L311 398L309 385L310 379L310 377.5L303.5 376L297.5 377.5L294 376L292.5 374L293 368.5L294 365.5L292 363.5L289 363L275 362L272 360.5L266.5 349.5L266 343.5L263.5 339L262.5 334L258.5 331L258 327.5L258.5 324L258.5 315L260 310L259 306.5L262 302.5L262 299L258 295.5L255 285L253.5 284L248.5 282.5L246.5 280.5L247 269L247 267L245.5 266L238.5 264L227 262L220 262L217 263L213 268L210.5 269L202.5 269.5L193 272.5L191.5 272.5L190 272L188.5 270.5L188 269L188.5 258.5L186.5 249L188.5 238L188.5 234L188 233L187.5 233L184 233.5L183.5 233.5L182 232L182 230.5L184 228L184.5 225.5L184.5 223L183.5 221.5L185.5 219L188 211L191 207.5L195.5 203.5L196 201L195.5 200L191.5 198L188 196L186.5 192L186.5 191L186 189.5L184 180L183 177.5L181.5 176L179 175L178 174.5L177 172L176 171.5L174 171L172.5 169.5L169.5 167L164.5 166L163 165.5L159 165L156.5 164.5L155.5 163Z"},{"id":"west","path":"M79 200.5L80 199L83 198.5L84.5 198L86 197L88 196.5L91 195L92.5 194L93.5 193.5L95 193.5L99 195L101.5 196.5L103.5 197L105.5 196.5L111.5 193.5L113 193L113.5 193L114.5 194.5L115.5 198L116 199.5L118.5 204L119.5 205.5L120.5 206L122 206L127.5 206.5L128.5 207.5L128 209L128.5 210L129.5 211L132 212.5L132 213L131.5 215.5L132 216.5L133.5 216.5L135 215.5L136.5 214L138 213L140 212.5L146 215L147 214.5L146 211.5L146.5 210.5L147 210.5L148.5 212L149.5 215L152 215.5L154 216.5L156.5 217.5L158 219L160.5 221L162.5 221L169 220.5L179.5 218.5L181 218.5L182 219L183 220.5L183.5 221.5L184.5 223L184.5 225.5L184 228L182 230.5L182 232L183.5 233.5L184 233.5L187.5 233L188 233L188.5 234L188.5 238L186.5 249L188.5 259L188 269L188.5 270.5L190 272L193 273L202.5 269.5L210.5 269L213 268L217 263.5L220 262L227 262L238.5 264L245.5 266L247 267L247 269L246.5 280.5L248.5 282.5L253.5 284L255 285L258 296L262.5 299L262 302.5L259 306.5L260 310L258.5 315L258.5 324L258 327.5L258.5 331L262.5 334L263.5 339L266 343.5L266.5 349.5L272 360.5L275 362L289 363L292 363.5L294 365.5L293 368.5L292.5 374L294 376L297.5 377.5L303.5 376L310 377.5L310 379L309 385L311 398L310 400.5L308 404L308.5 411L306.5 419.5L307.5 421L312 427L316.5 434.5L312.5 435.5L306.5 439.5L301.5 438L299 438.5L296 440L291.5 440.5L287 444L281 447L270.5 456.5L268.5 457.5L266 457.5L264.5 456L260 447L258 445L256.5 445L251 448L247 447.5L242.5 449.5L240.5 448L239 444L238 442.5L236.5 442L234.5 442.5L233 444L232 446L233.5 450.5L233 453L230.5 457.5L229 461L221.5 463L217.5 467L217.5 468.5L218 469L222 470L223 471.5L222.5 477L223.5 481L223 485.5L224.5 487L228 489L230.5 492L232 493L234.5 493L236.5 492L239 483L241.5 478.5L243 478L248 478L248.5 477.5L250 476.5L252.5 477L254 478.5L254.5 480L253 487L255.5 491.5L253.5 497.5L251.5 498.5L247 498L245 498.5L241 501L240 501L238 499.5L237.5 509.5L238.5 512.5L239.5 514L240.5 514L247.5 514.5L249.5 515.5L252.5 525L251 531L250 533L246.5 535L244.5 538.5L244 536.5L244 536L243 535L243 534.5L242 533.5L241.5 534.5L241.5 532.5L241 532L241 531L240 530L239.5 528L239.5 526L238.5 525L239 524L237.5 523L237 521.5L234.5 521.5L233.5 520.5L233.5 519L231.5 517L233 512L231.5 511.5L230 510.5L229 508L230 505L230 503L227 502L226 499L226 496.5L225 495.5L224.5 494.5L223 493.5L223 493L222.5 491L223 488.5L222 487L219.5 486.5L217 484.5L216.5 483.5L217.5 484L218 482L217 479L215.5 477.5L213.5 478L212.5 477.5L212.5 478.5L213.5 479L212 478.5L211.5 477L210 476L210 474L208.5 473.5L209 472.5L208.5 471L203 467.5L200 466.5L198.5 464.5L198 464L198 463L196 463L194.5 461.5L194 460L192 459.5L190.5 459.5L190.5 460L189.5 460.5L187.5 459L186.5 459L188 460L188 460.5L185.5 459L180.5 455.5L178.5 453.5L179 453L178 452L178.5 451L177.5 451.5L175.5 449.5L176 449L177 449.5L176.5 448.5L175.5 448.5L174 446.5L172.5 443.5L173 443L172.5 442L171 441L171.5 440.5L171 440L170 440L168 438.5L168.5 437L167.5 436L166 436L165 434L165 433L164 430.5L162 429.5L161 425.5L160.5 424.5L159 422L159 421.5L160 421L161.5 420L162 418.5L161 417.5L161 416.5L160.5 415.5L161.5 415.5L160.5 414.5L161 414L160 414L159.5 413.5L158.5 407.5L157 404.5L153.5 400L153.5 398L154 397.5L153 396.5L154 395.5L155 395L154 397L154.5 398L155 397L156 397L156 394.5L157.5 394.5L157 393.5L156 393L157 391.5L156.5 390L159 385.5L159 384L159.5 383L160 383L160.5 381.5L159.5 381.5L159 382.5L158 382L158.5 379.5L158.5 376L156.5 373L156.5 371L155 369.5L156 369L155 368.5L154.5 369L150.5 362L151.5 362.5L153 364.5L153 365L154 365.5L154.5 364.5L153 362.5L153 361L150.5 361L151 360.5L150 360.5L150 361L148.5 358.5L149 357L148.5 353L148 352.5L147.5 353L145.5 350.5L145.5 349L145 348.5L144 346.5L144 344L143 340.5L142 339.5L142 338.5L140.5 338.5L140.5 339L141 339.5L140.5 340L140 339.5L140 338L139.5 336.5L139.5 336L138.5 335.5L138 335L137 332L137 330.5L136 329.5L135 329L134.5 327.5L132 326L131.5 325L131 324.5L130 324L129.5 324.5L129 324.5L127.5 323L128 322L127 322.5L126 321L124 319.5L123.5 319L122.5 319.5L119 316.5L119.5 316L119 316L119.5 314L118 315L118.5 315.5L118 316.5L116.5 316.5L113.5 314.5L112.5 312.5L111.5 312.5L111 311.5L110.5 311.5L110.5 310.5L109 311.5L108 311L108 312L108.5 312L108 313L106.5 313L106 312L104.5 312L103 309.5L101.5 308L101.5 306.5L102.5 307L102.5 306L101.5 304.5L101 303L100 302L100.5 298.5L101.5 297L107 297L109.5 296L110 295L111.5 293.5L112 292.5L113.5 292L116 292.5L118.5 292.5L120 292L121 290.5L121 275.5L121.5 270.5L121.5 269.5L122 267.5L121 266L117.5 266L117 265.5L115 259.5L113.5 255.5L109.5 252L107.5 250L107 248.5L105.5 245.5L103.5 244.5L99.5 242L97.5 242L96 244L94.5 239.5L93 236L92.5 234.5L92.5 232L95.5 226.5L96 225L95.5 223.5L94 222.5L89 221.5L87.5 220L86.5 218.5L86 216L87 207L86 202.5L84.5 201.5L83 201L79.5 202L79 201.5L79 200.5ZM157 393.5L157.5 391.5L157.5 390.5L157 393.5ZM152.1818181818182 342.59090909090907L153 343L152.5 342.5L152.1818181818182 342.59090909090907ZM157.5 348L161 352.5L162.5 353.5L161 352L157.5 348ZM172 357.5L182.5 354.5L187 354L182.5 354L172 357.5ZM186.5 367L190.5 368.5L192.5 370L190.5 368L186.5 367ZM192 376.5L192.5 378L197.5 378.5L193 378L192 376.5ZM200 377.5L204.5 373.5L211.5 375.5L204.5 373L200 377.5ZM234.5 354.5L240 352.5L240.5 351.5L240 352L234.5 354.5Z"},{"id":"north","path":"M3 165.5L5 163L6 163L5.5 162L6 161.5L7 159L6.5 159L10 151L11 149L10.5 145.5L10 143.5L12 138L12 135L12.5 132L13 131L12.5 129L13.5 128L13.5 126L14 123L15 122.5L14.5 121.5L15.5 121L15 119L16 118.5L16 118L16.5 116.5L54.5 123L69.5 111L78 96.5L104 91L109.5 78L121 71.5L86.5 31.5L120.5 21.5L155.5 11.5L166 2L165.5 0L166.5 1.5L169 3L187.5 8.5L193.5 11.5L197 13.5L285.5 76.5L352 122L359 123.5L404 130.5L391.5 135L383 144L370.5 167.5L361.5 179.5L360 184.5L360.5 186L362 187.5L360.5 190L359 190.5L357.5 190L355.5 188L354.5 186L348.5 180.5L346.5 180L343.5 178.5L333.5 177L331 176L329 173.5L326 165.5L321 156L320 154.5L318 153L316.5 153.5L311.5 156.5L309 157.5L303 154.5L295.5 154.5L294 153L293.5 146.5L292.5 146L290 146.5L285.5 149L281.5 149L279 147.5L274.5 142.5L272.5 140.5L258 137L253.5 137.5L248.5 138.5L236.5 135L215.5 140L213 139.5L208.5 137.5L205.5 137L193 142.5L179.5 150L175.5 151L165.5 155.5L159 159L155.5 163L156.5 164.5L159 165L163 165.5L164.5 166L169.5 167L172.5 169.5L174 171L176 171.5L177 172L178 174.5L179 175L181.5 176L183 177.5L184 180L186 189.5L186.5 191L186.5 192L188 196L191.5 198L195.5 200L196 201L195.5 203.5L191 207.5L188 211.5L185.5 219L183.5 221.5L183 220.5L182 219L181 218.5L179.5 218.5L169 220.5L162.5 221L160.5 221L158 219L156.5 217.5L151.5 215.5L149.5 215L148.5 212L147 210.5L146.5 210.5L146 211.5L147 214.5L146 215L140 212.5L138 213L136.5 214L135 215.5L133.5 216.5L132 216.5L131.5 215.5L132 213L132 212.5L129.5 211L128.5 210L128 209L128.5 207.5L127.5 206.5L122 206L120.5 206L119.5 205.5L118.5 204L116 199.5L115.5 198L114.5 194.5L113.5 193L113 193L111.5 193.5L105.5 196.5L103.5 197L101.5 197L99 195L95 193.5L93.5 194L92.5 194L91 195L88 196.5L86 197L84.5 198L83 198.5L80 199L79 200.5L79 201.5L79.5 202L83 201L84.5 201.5L86 202.5L87 207L86 216L86.5 218.5L87.5 220L89.5 221.5L94 222.5L95.5 223.5L96 225L95.5 226.5L92.5 232L92.5 234.5L93 236L94.5 239.5L96 244L98 242.5L99.5 242L103.5 244.5L105.5 246L106.5 246.5L107.5 250.5L109.5 252L113.5 255.5L115 259.5L117 265.5L117.5 266L121 266L122 267.5L121.5 270L121.5 270.5L121 275.5L121 290.5L120 292L118.5 292.5L112 292.5L111.5 293.5L110 295L109.5 296L107 297L101.5 297.5L100.5 299L100 302L98.5 299L98.5 298.5L97.5 299L97 297L94.5 295.5L94.5 295L94 293.5L94.5 293.5L94.5 292.5L93.5 292L94 292.5L93.5 293L92 291L92.5 290.5L94 291L93 291.5L94.5 291.5L95 290.5L96 289.5L95 288L96.5 285L95 282L96 280.5L95.5 278L90.5 273L89.5 269.5L89.5 268L86.5 265.5L86.5 264L86 263.5L85.5 261.5L84.5 260L82.5 259L80 256L79.5 256L80.5 257.5L79.5 257.5L79 256.5L78 256.5L77 255.5L77 254.5L76.5 255L76 254.5L75.5 252.5L74.5 252.5L76 249.5L76.5 247.5L76.5 245.5L74.5 244.5L72 244L71.5 244L69.5 242L68 238.5L65 233.5L63 227.5L60.5 223L58.5 221L57.5 219L55.5 218L53.5 214L53.5 212L50.5 209L48.5 207.5L48.5 207L45.5 204L45 201.5L46 200.5L45.5 199.5L43 195.5L40.5 194.5L38 191.5L38 190L36 187.5L35.5 184.5L34 182.5L34 180.5L33 179L32 178L30 177.5L30 175L27.5 173L27 171.5L23.5 169.5L23.5 169L25.5 168.5L25.5 168L23.5 167.5L22.5 167L21.5 167L19.5 165L19 165.5L18.5 165L19 166L17.5 165.5L15.5 166.5L13 166.5L12.5 167L12.5 166L13.5 165.5L11.5 165.5L11 167L11 166.5L11.5 165L10.5 166L9.5 166L9.5 167L9 167L9 165.5L8 165.5L8 165L7.5 164L7.5 164.5L7 164.5L5.5 166L6 167L5.5 167L5 168.5L4 167L4.5 166L3.5 165.5L3 166L3 165.5ZM141 160.5L141.5 161L142.5 163L141.5 160.5L141 160.5Z"},{"id":"south","path":"M217.5 467L221.5 463L229 461L230.5 457.5L233 452.5L233.5 450.5L232 446L233 443.5L234.5 442.5L236.5 442L238 442.5L239 444L240.5 448L242.5 449.5L247 447.5L251 447.5L256.5 445L258 445L260 447L264.5 456L266 457L268.5 457.5L270.5 456.5L281 447L287 444L291.5 440L296 440L299 438.5L301.5 438L306.5 439.5L312.5 435.5L316.5 434.5L322 439.5L325 444L329 448L330 449.5L330 452.5L326.5 458.5L325 464.5L325.5 466.5L328 469L332 475.5L345.5 487.5L354 493.5L359.5 495.5L362.5 496.5L371.5 497L430.5 492L446.5 489.5L457 487L449 550.5L446 575L439 579.5L431.5 579.5L423.5 568.5L413 570L400 569.5L382.5 567L376.5 566.5L370 562.5L350.5 562.5L349 563.5L347 564L344.5 562.5L342 562.5L333 563.5L332 565L331 564L328 564.5L327 566.5L324 565.5L322.5 566L320.5 565.5L320 565L318 565L315.5 562.5L315.5 563.5L313 561L307.5 557.5L305 557.5L303.42857142857144 557.8928571428571L303.5 558L304 559.5L302.5 562.5L302.5 565L304 566L304 566.5L305 567L305 567.5L300.5 569L301 571L299.5 572L299.5 573.5L299 574L299 575L300 574.5L301.5 575L302.5 577L302 578L299.5 577.5L300 580.5L298.5 581L298 581.5L299.5 583.5L301 584L301.5 584.5L302.5 585L302.5 586.5L303 587.5L301.5 587.5L301 588L301.5 591L300.5 591L298.5 590L298 590L298.5 591L297.5 593.5L297.5 594.5L293 596L291.5 597L292 600L290 600L285.5 599.5L285 599L285.5 597L284.5 596L283.5 594L284 590.5L283 589.5L283 588L280.5 585L279.5 584L278.5 584.5L278.5 583L278 583L277 582.5L278 581.5L277.5 580L278 578.5L276.5 577L274.5 576.5L273 574.5L273.5 573L273 572.5L271.5 572L272.5 574L272 575L272 577L271.5 578L271.5 574L270.5 571L270 566.5L269.5 566.5L270 564.5L270 562.5L268.5 562.5L267 560L265 558.5L264 558.5L263.5 557L263 556L255.5 550.5L255 549.5L253.5 549.5L252 548.5L251 548.5L251.5 547.5L247.5 544L248 544L246.5 542.5L246.5 542L247 541.5L246.5 540.5L245.5 540L244.5 538.5L246.5 535.5L250 533L251 531L252.5 524.5L249.5 515.5L247.5 514.5L240.5 514L239.5 513.5L238.5 512L237.5 509L238 499L240 501L241 501L244.5 498L247 498L251.5 498.5L253 497.5L254 496L255.5 491.5L253 487L254.5 480L254 478.5L252.5 476.5L250 476.5L248.5 477.5L247.5 478L243 478L241.5 478.5L239 483L236.5 492L234.5 493L232 493L230 492L228 489L224.5 487L223 485L223.5 481L222.5 477L223 471.5L222 470L218 469L217.5 468.5L217.5 467ZM250.5 582L253.5 584L255 587L257.5 587.5L259 587.5L260 588.5L261.5 588L260.5 588L260 587.5L260.5 586.5L260.5 585.5L261 585.5L261.5 585L262.5 585L262.5 586.5L264.5 588.5L265 588L265 588.5L265.5 588.5L265.5 589.5L265 590L265.5 593L264.5 593.5L263 592L261.5 591.5L262.5 591L262.5 589.5L261 589L257.5 590L256 588.5L254.5 588L253.5 587L252.5 585.5L251 585L251.5 584L250.5 583L250.5 582ZM261.5 588L261.5 587.5L261 587.5L261.5 588ZM253.5 581.5L255 581L256 580L257 580.5L256.5 581.5L257 582.5L258.5 583L258.5 584L257 583.5L256.5 584L258.5 585.5L259.5 587L259 587L258.5 586L255.5 585L253.5 582.5L253.5 581.5Z"},{"id":"east","path":"M360 184.5L361.5 179.5L370.5 167.5L383 144L391.5 135L404 131L409 131L411.5 129.5L416 126.5L447 130.5L448 131.5L451.5 136.5L452 139L452 144L455.5 148.5L455.5 149L480.5 149L481.5 150L483 150.5L483 152.5L484 153.5L483.5 153.5L484.5 154L483.5 157L484.5 159L486 160L487.5 162L487 162.5L486.5 165L487 166L489 168.5L493 169.5L492.5 170.5L491.5 170.5L491.5 171.5L493 173.5L494 173.5L494 175L496 176L496 178L496.5 178.5L495.5 179.5L495.5 179L494.5 179L495 177L494.5 178L494 176.5L492.5 181L493.5 181L494 179.5L494 182L495 181L495 183L496 182.5L495 183.5L495 184L494.5 185L496 185.5L496.5 184L497 184L496.5 185L497 186.5L497.5 186L497.5 185L499 184.5L500 184.5L501 186L503.5 187.5L507.5 187.5L509 188L509.5 189.5L510.5 190L511 192L510.5 192L510.5 190.5L509.5 191.5L509 191L508.5 192L507.5 191L507 191.5L506.5 191L506 192L505 191.5L504.5 192.5L505 192L506.5 193L507 194L508 193.5L508 192.5L509.5 193.5L509 194L508 194L508.5 195L508 196.5L509.5 195L511 196L511 199.5L512 200.5L513.5 200.5L514.5 201L514 203L514.5 204.5L515 202.5L515.5 203L515.5 204L516.5 203.5L518 204L517.5 202L518.5 201L519.5 202L520 201.5L521 198.5L522 197.5L520.5 202L519.5 203L520.5 205L521.5 206L522.5 207.5L524 207L524 208L523 208L523.5 209L524 209L524 210L524.5 210L526.5 212L527 212L528 212.5L529.5 213L530 213.5L533 214L535 216L539.5 221.5L540.5 222.5L540 222.5L538.5 220.5L537 220.5L536 221L534.5 218L534.5 221.5L535 221.5L535 225.5L536 227.5L537.5 229.5L537.5 228.5L538 228L538.5 229L539 227.5L539 230L540 230.5L541 228.5L541 226.5L541.5 227L541.5 228L542 227L542 228.5L541 229L541 230L540.5 230L542 231.5L542.5 233.5L542 237.5L542.5 238L542 238L542 239.5L541 240.5L541 240L540.5 238.5L540 241L540.5 241.5L540 243.5L540 245L539 245.5L536.5 239.5L536 239L535.5 239L534 242L535 243L534.5 244L534.5 247L535 247L536 246L537 247L538 247L538.5 247.5L538.5 248.5L539 249L538.5 249.5L538 250.5L539.5 253L541 256L542.5 256.5L543 258.5L543.5 259L543.5 260L543 260L542.5 258.5L541.5 258L540.5 257L539.6666666666666 257L540 258L541 259L541 259.5L541.5 258.5L542 259L542 261L543.5 262L544 263.5L545.5 264L545.5 265L547.5 267.5L548 267.5L547 265.5L547.5 265L548.5 266.5L551.5 269L553 273L552.5 275.5L554 277.5L553.5 279.5L554 282L554 283L555 283.5L554.5 282.5L554.5 282L557 285.5L558 288.5L559 288.5L559.5 289.5L561 296L562 294L563.5 293.5L563 294L564.5 296.5L568 300.5L572.5 301.5L575 300.5L576.5 299L579 299L578.5 299.5L579.5 300L580 299.5L579.5 300.5L579.5 303L581 302.5L581.5 301L583 299.5L583 298.5L583.5 299L584 298.5L584.5 300.5L585.5 300L586.5 300.5L586 301L584.5 301L584 302L583.5 302L583 303.5L580 306L579.5 309L579 309L579 311L581.5 311.5L582.5 310L584.5 310L586 310.5L587.5 312.5L589 312.5L590 314L589.5 318L623.5 359.5L647.5 364.5L707 378L714 370.5L730 396.5L707 470L603.5 506.5L563.5 514.5L505.5 520.5L473.5 536.5L452.5 562L448 574L446.5 575L449 550.5L457 487L476.5 334.5L476.5 326.5L475 319.5L472 314L470.5 312L461 302.5L451.5 296.5L449.5 294.5L448.5 292.5L447.5 289L447.5 281.5L448 266.5L447.5 244L447 239L446 236.5L442 234.5L433.5 231L432 228.5L425.5 222.5L424 222.5L419.5 223.5L417 223.5L414.5 222L404.5 215L401.5 214.5L396 214.5L393.5 213.5L389.5 210.5L386 206L380.5 205L370 199L369 197.5L367.5 192.5L365.5 190L362 187.5L360.5 186L360 184.5ZM514 203L513.5 202.5L513 203L513.5 203L513 203.5L514 203Z"}];
+
+const REGIONS = {
+  "ryiadh":            {ar:"الرياض",           em:"🏙️", cx:367, cy:342},
+  "mecca":             {ar:"مكة المكرمة",       em:"🕋", cx:203, cy:412},
+  "medina":            {ar:"المدينة المنورة",   em:"🕌", cx:171, cy:286},
+  "eastern-province":  {ar:"الشرقية",           em:"🌊", cx:545, cy:330},
+  "al-qassim":         {ar:"القصيم",            em:"🌴", cx:300, cy:250},
+  "hail":              {ar:"حائل",              em:"⛰️", cx:248, cy:196},
+  "tabuk":             {ar:"تبوك",              em:"🏜️", cx:96,  cy:210},
+  "northern-borders":  {ar:"الحدود الشمالية",   em:"🧭", cx:268, cy:98},
+  "jizan":             {ar:"جازان",             em:"🌾", cx:262, cy:572},
+  "najran":            {ar:"نجران",             em:"🏰", cx:390, cy:530},
+  "al-bahah":          {ar:"الباحة",            em:"🌲", cx:232, cy:463},
+  "al-jawf":           {ar:"الجوف",             em:"🫒", cx:138, cy:96},
+  "asir":              {ar:"عسير",              em:"🌄", cx:296, cy:500}
+};
+const SMALL = {"al-bahah":1,"jizan":1};
+
+/* ====== المناطق الكبرى (تقسيم الخريطة) ====== */
+const GROUPS_META = {
+  najd:  {ar:"نجد",      em:"🏜️", cx:330, cy:285},
+  west:  {ar:"الغربية",  em:"🕋", cx:178, cy:352},
+  north: {ar:"الشمالية", em:"🧭", cx:165, cy:128},
+  south: {ar:"الجنوبية", em:"🌄", cx:300, cy:512},
+  east:  {ar:"الشرقية",  em:"🌊", cx:545, cy:330}
+};
+const GROUP_OF = {
+  "ryiadh":"najd", "al-qassim":"najd", "hail":"najd",
+  "mecca":"west", "medina":"west",
+  "tabuk":"north", "al-jawf":"north", "northern-borders":"north",
+  "asir":"south", "al-bahah":"south", "jizan":"south", "najran":"south",
+  "eastern-province":"east"
+};
+
+
+/* ====== CITIES → REGIONS (governorates & towns) ====== */
+const CITIES = [
+ /* الرياض */
+ ["الرياض","ryiadh"],["الدرعية","ryiadh"],["الخرج","ryiadh"],["الدوادمي","ryiadh"],["المجمعة","ryiadh"],["القويعية","ryiadh"],
+ ["وادي الدواسر","ryiadh"],["الأفلاج","ryiadh"],["الزلفي","ryiadh"],["شقراء","ryiadh"],["حوطة بني تميم","ryiadh"],["عفيف","ryiadh"],
+ ["السليل","ryiadh"],["ضرما","ryiadh"],["المزاحمية","ryiadh"],["رماح","ryiadh"],["ثادق","ryiadh"],["حريملاء","ryiadh"],
+ ["الحريق","ryiadh"],["الغاط","ryiadh"],["مرات","ryiadh"],["الرين","ryiadh"],["الدلم","ryiadh"],["ساجر","ryiadh"],
+ ["سدير","ryiadh"],["حوطة سدير","ryiadh"],["روضة سدير","ryiadh"],["جلاجل","ryiadh"],["تمير","ryiadh"],["الأرطاوية","ryiadh"],["نعجان","ryiadh"],
+ /* مكة المكرمة */
+ ["مكة المكرمة","mecca"],["جدة","mecca"],["الطائف","mecca"],["القنفذة","mecca"],["الليث","mecca"],["رابغ","mecca"],
+ ["الجموم","mecca"],["خليص","mecca"],["الكامل","mecca"],["المويه","mecca"],["ميسان","mecca"],["أضم","mecca"],
+ ["العرضيات","mecca"],["بحرة","mecca"],["تربة","mecca"],["الخرمة","mecca"],["رنية","mecca"],
+ /* المدينة المنورة */
+ ["المدينة المنورة","medina"],["ينبع","medina"],["العلا","medina"],["مهد الذهب","medina"],["الحناكية","medina"],
+ ["بدر","medina"],["خيبر","medina"],["العيص","medina"],["وادي الفرع","medina"],
+ /* القصيم */
+ ["بريدة","al-qassim"],["عنيزة","al-qassim"],["الرس","al-qassim"],["المذنب","al-qassim"],["البكيرية","al-qassim"],
+ ["البدائع","al-qassim"],["الأسياح","al-qassim"],["النبهانية","al-qassim"],["الشماسية","al-qassim"],["عيون الجواء","al-qassim"],
+ ["رياض الخبراء","al-qassim"],["عقلة الصقور","al-qassim"],["ضرية","al-qassim"],["دخنة","al-qassim"],["القوارة","al-qassim"],
+ /* الشرقية */
+ ["الدمام","eastern-province"],["الخبر","eastern-province"],["الظهران","eastern-province"],["الأحساء","eastern-province"],
+ ["الهفوف","eastern-province"],["المبرز","eastern-province"],["حفر الباطن","eastern-province"],["الجبيل","eastern-province"],
+ ["القطيف","eastern-province"],["الخفجي","eastern-province"],["رأس تنورة","eastern-province"],["بقيق","eastern-province"],
+ ["النعيرية","eastern-province"],["قرية العليا","eastern-province"],["سيهات","eastern-province"],["صفوى","eastern-province"],["تاروت","eastern-province"],
+ /* عسير */
+ ["أبها","asir"],["خميس مشيط","asir"],["بيشة","asir"],["النماص","asir"],["محايل عسير","asir"],["ظهران الجنوب","asir"],
+ ["تثليث","asir"],["سراة عبيدة","asir"],["رجال ألمع","asir"],["بلقرن","asir"],["أحد رفيدة","asir"],["المجاردة","asir"],
+ ["البرك","asir"],["بارق","asir"],["تنومة","asir"],["طريب","asir"],
+ /* تبوك */
+ ["تبوك","tabuk"],["الوجه","tabuk"],["ضباء","tabuk"],["تيماء","tabuk"],["أملج","tabuk"],["حقل","tabuk"],["البدع","tabuk"],
+ /* حائل */
+ ["حائل","hail"],["بقعاء","hail"],["الغزالة","hail"],["الشنان","hail"],["السليمي","hail"],["الحائط","hail"],
+ ["الشملي","hail"],["موقق","hail"],["سميراء","hail"],
+ /* الحدود الشمالية */
+ ["عرعر","northern-borders"],["رفحاء","northern-borders"],["طريف","northern-borders"],["العويقيلة","northern-borders"],
+ /* جازان */
+ ["جازان","jizan"],["صبيا","jizan"],["أبو عريش","jizan"],["صامطة","jizan"],["بيش","jizan"],["الدرب","jizan"],
+ ["ضمد","jizan"],["الريث","jizan"],["الحرث","jizan"],["العارضة","jizan"],["أحد المسارحة","jizan"],["العيدابي","jizan"],
+ ["فرسان","jizan"],["الدائر","jizan"],["هروب","jizan"],["فيفاء","jizan"],
+ /* نجران */
+ ["نجران","najran"],["شرورة","najran"],["حبونا","najran"],["بدر الجنوب","najran"],["يدمة","najran"],["ثار","najran"],["خباش","najran"],
+ /* الباحة */
+ ["الباحة","al-bahah"],["بلجرشي","al-bahah"],["المندق","al-bahah"],["المخواة","al-bahah"],["قلوة","al-bahah"],
+ ["العقيق","al-bahah"],["القرى","al-bahah"],["الحجرة","al-bahah"],["بني حسن","al-bahah"],["غامد الزناد","al-bahah"],
+ /* الجوف */
+ ["سكاكا","al-jawf"],["القريات","al-jawf"],["دومة الجندل","al-jawf"],["طبرجل","al-jawf"]
+];
+function normAr(s){
+  return (s||'').trim().toLowerCase()
+    .replace(/[\u064B-\u0652\u0670\u0640]/g,'')
+    .replace(/[أإآٱ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/\s+/g,' ');
+}
+/* matching that ignores "ال" التعريف at the start of every word */
+function normSearch(s){
+  return normAr(s).split(' ').map(w=>w.replace(/^ال/,'')).join(' ');
+}
+function cityMatches(cityName, region, q){
+  const c = normSearch(cityName), r = normSearch(REGIONS[region].ar);
+  return {starts: c.startsWith(q), has: c.includes(q) || r.includes(q)};
+}
+
+/* ====== DEVICE ID (one vote per device) ====== */
+function getDeviceId(){
+  try{
+    let id = localStorage.getItem('kabi_nd96_device');
+    if(!id){
+      id = 'd_' + (crypto && crypto.randomUUID ? crypto.randomUUID().replace(/-/g,'') : Math.random().toString(36).slice(2)+Date.now().toString(36));
+      localStorage.setItem('kabi_nd96_device', id);
+    }
+    return id;
+  }catch(e){
+    // storage unavailable → session-only id (still one vote per open page)
+    if(!window.__sid) window.__sid = 'd_' + Math.random().toString(36).slice(2)+Date.now().toString(36);
+    return window.__sid;
+  }
+}
+function localVotedRegion(){ try{ return localStorage.getItem('kabi_nd96_voted'); }catch(e){ return null; } }
+function markLocalVoted(region){ try{ localStorage.setItem('kabi_nd96_voted', region); }catch(e){} }
+
+/* ====== ROUTING ====== */
+const views = {landing:document.getElementById('landing'), vote:document.getElementById('vote'), voted:document.getElementById('votedState'), screen:document.getElementById('screen')};
+function route(){
+  const h = location.hash;
+  const isVote = h==='#vote', isScreen = h==='#screen';
+  views.landing.classList.toggle('hidden', isVote||isScreen);
+  views.screen.classList.toggle('hidden', !isScreen);
+  views.voted.classList.add('hidden');
+  views.vote.classList.toggle('hidden', !isVote);
+  if(isScreen) startScreen();
+  if(isVote){ initVote(); setTimeout(()=>{ const s=document.getElementById("citySearch"); if(s) s.focus(); }, 250); }
+}
+window.addEventListener('hashchange', route);
+
+/* ====== FIREBASE (عبّئ الإعدادات هنا) ====== */
+// ⬇️ الصق إعدادات مشروعك من: Firebase Console → Project settings → Your apps → SDK setup → Config
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCTWPVhfd-gGr5nXjeeRWEVCP8UeE1lxQ8",
+  authDomain: "kabi-activity.firebaseapp.com",
+  databaseURL: "https://kabi-activity-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "kabi-activity",
+  appId: "1:1056854888005:web:9abe977048d1a0796b1d2c"
+};
+// ⬆️ لا تنس databaseURL — هو الأهم
+
+let db = null;
+function getDb(){
+  if(db) return db;
+  try{
+    if(!FIREBASE_CONFIG.databaseURL || FIREBASE_CONFIG.databaseURL.indexOf('PASTE_HERE')>-1) throw new Error('no config');
+    firebase.initializeApp(FIREBASE_CONFIG);
+    db = firebase.database();
+  }catch(e){
+    document.getElementById('dbWarn').classList.remove('hidden');
+    db = null;
+  }
+  return db;
+}
+
+/* ====== VOTE (mobile) ====== */
+const grid = document.getElementById('regionGrid');
+const cityListEl = document.getElementById('cityList');
+const citySearch = document.getElementById('citySearch');
+const pickedEl = document.getElementById('pickedCity');
+let selRegion = null, selCity = null, submitting = false, voteInited = false;
+const submitBtn = document.getElementById('submitBtn');
+const voteMsg = document.getElementById('voteMsg');
+
+function renderCities(list, note){
+  cityListEl.innerHTML = '';
+  if(note){ const d=document.createElement('div'); d.className='no-city'; d.textContent=note; cityListEl.appendChild(d); }
+  let lastRegion = null;
+  const grouped = !citySearch.value.trim(); // group with region headers only for the full list
+  list.forEach(([name, region])=>{
+    if(grouped && region !== lastRegion){
+      lastRegion = region;
+      const h = document.createElement('div');
+      h.className = 'city-group';
+      h.textContent = REGIONS[region].em + ' منطقة ' + REGIONS[region].ar;
+      cityListEl.appendChild(h);
+    }
+    const b = document.createElement('button');
+    b.className = 'city-btn' + (selCity===name?' sel':'');
+    b.innerHTML = grouped ? name : name + ' <small>· ' + REGIONS[region].ar + '</small>';
+    b.onclick = ()=> pickCity(name, region);
+    cityListEl.appendChild(b);
+  });
+}
+function pickCity(name, region){
+  selCity = name; selRegion = region;
+  document.querySelectorAll('.region-btn').forEach(x=>x.classList.remove('sel'));
+  pickedEl.classList.remove('hidden');
+  const g = GROUPS_META[GROUP_OF[region]];
+  pickedEl.innerHTML = '📍 ' + name + ' — ' + REGIONS[region].ar + ' · فريق ' + g.ar + ' ' + g.em;
+  submitBtn.textContent = 'أكّد صوتك ✅';
+  renderCities(filterCities(citySearch.value));
+  checkForm();
+  submitBtn.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+function filterCities(q){
+  const n = normSearch(q);
+  if(!n) return CITIES; // القائمة كاملة مقسمة بالمناطق
+  const starts = [], rest = [];
+  CITIES.forEach(c=>{
+    const m = cityMatches(c[0], c[1], n);
+    if(m.starts) starts.push(c); else if(m.has) rest.push(c);
+  });
+  return starts.concat(rest).slice(0,40);
+}
+citySearch.addEventListener('input', ()=>{
+  const res = filterCities(citySearch.value);
+  renderCities(res, res.length? null : 'ما لقيناها 😅 جرّب اسم أقرب محافظة، أو اختر المنطقة مباشرة من تحت');
+});
+renderCities(filterCities(''));
+
+/* fallback: pick region directly */
+document.getElementById('regionToggle').addEventListener('click', ()=>{
+  grid.classList.toggle('hidden');
+});
+Object.entries(REGIONS).forEach(([id,r])=>{
+  const b = document.createElement('button');
+  b.className = 'region-btn';
+  b.innerHTML = '<span class="em">'+r.em+'</span>'+r.ar;
+  b.onclick = ()=>{
+    document.querySelectorAll('.region-btn').forEach(x=>x.classList.remove('sel'));
+    document.querySelectorAll('.city-btn').forEach(x=>x.classList.remove('sel'));
+    b.classList.add('sel'); selRegion = id; selCity = null;
+    pickedEl.classList.remove('hidden');
+    const g = GROUPS_META[GROUP_OF[id]];
+    pickedEl.innerHTML = '📍 منطقة ' + r.ar + ' ' + r.em + ' · فريق ' + g.ar + ' ' + g.em;
+    submitBtn.textContent = 'أكّد صوتك ✅';
+    checkForm();
+  };
+  grid.appendChild(b);
+});
+function checkForm(){ submitBtn.disabled = submitting || !selRegion; }
+function msg(t, cls){ voteMsg.textContent = t; voteMsg.className = cls||''; }
+
+async function initVote(){
+  // already voted on this device?
+  const prev = localVotedRegion();
+  if(prev){ showVoted(prev, true); return; }
+  if(voteInited) return; voteInited = true;
+  // double-check against the store (e.g., page reopened after clearing UI state)
+  try{
+    const d = getDb();
+    if(d){
+      const snap = await d.ref('votes/'+getDeviceId()).get();
+      const v = snap.exists() ? snap.val() : null;
+      if(v && v.region){
+        markLocalVoted(v.region);
+        showVoted(v.region, true, v.city||null);
+      }
+    }
+  }catch(e){}
+}
+
+submitBtn.addEventListener('click', async ()=>{
+  if(submitting || !selRegion) return;
+  submitting = true; checkForm(); msg('ثواني... نسجّل صوتك ⏳');
+  try{
+    const d = getDb();
+    if(!d){ msg('الخدمة غير مجهزة بعد — بلّغ المنظمين 🙏', 'err'); return; }
+    const ref = d.ref('votes/'+getDeviceId());
+    const snap = await ref.get();
+    const prev = snap.exists() ? snap.val() : null;
+    if(prev && prev.region){
+      markLocalVoted(prev.region);
+      showVoted(prev.region, true, prev.city||null);
+      return;
+    }
+    await ref.set({region:selRegion, city:selCity||null, ts:Date.now()});
+    markLocalVoted(selRegion);
+    showVoted(selRegion, false, selCity);
+  }catch(e){
+    msg('صار خطأ بسيط، جرّب مرة ثانية 🙏', 'err');
+  }finally{
+    submitting = false; checkForm();
+  }
+});
+
+function showVoted(region, already, city){
+  views.vote.classList.add('hidden');
+  views.landing.classList.add('hidden');
+  const r = REGIONS[region];
+  const g = GROUPS_META[GROUP_OF[region]] || null;
+  document.getElementById('votedEmoji').textContent = already ? '✅' : '🎉';
+  document.getElementById('votedTitle').textContent = already
+    ? 'صوتك محسوب من قبل!'
+    : 'تم احتساب صوتك!';
+  document.getElementById('votedSub').innerHTML = (g
+    ? 'أنت مع فريق <b>'+g.ar+' '+g.em+'</b>'+(city? ' — من '+city+(r?' ('+r.ar+')':'')+' 📍': (r? ' — منطقة '+r.ar:''))+'<br>'
+    : '') + (already
+    ? 'كل جهاز له صوت واحد بس 😉 تابع الخريطة على الشاشة!'
+    : 'ارفع راسك للشاشة... منطقتك توّها زادت 🗺️💚');
+  views.voted.classList.remove('hidden');
+  if(!already) burst();
+}
+function burst(){
+  if(typeof confetti!=='function') return;
+  confetti({particleCount:120, spread:75, origin:{y:.65}, colors:['#216AB1','#1EAFD9','#0EB3AE','#3BB691','#FFFFFF']});
+  setTimeout(()=>confetti({particleCount:70, angle:60, spread:60, origin:{x:0,y:.7}, colors:['#0B7A3E','#8FF0CE','#FFFFFF']}), 250);
+  setTimeout(()=>confetti({particleCount:70, angle:120, spread:60, origin:{x:1,y:.7}, colors:['#0B7A3E','#8FF0CE','#FFFFFF']}), 400);
+}
+
+/* ====== SCREEN ====== */
+let screenStarted = false;
+const svg = document.getElementById('mapSvg');
+const SVGNS = 'http://www.w3.org/2000/svg';
+const pathEls = {}, bubbleEls = {};
+
+function buildQR(){
+  try{
+    const url = location.origin + location.pathname + '#vote';
+    new QRCode(document.getElementById('qrHolder'), {
+      text:url, width:132, height:132,
+      colorDark:'#0D1B3E', colorLight:'#FFFFFF',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  }catch(e){
+    document.getElementById('qrHolder').textContent = 'QR';
+  }
+}
+
+function buildMap(){
+  MAP_PATHS.forEach(l=>{
+    const p = document.createElementNS(SVGNS,'path');
+    p.setAttribute('d', l.path);
+    p.setAttribute('class','region-path');
+    p.setAttribute('fill','#22415F');
+    svg.appendChild(p);
+    pathEls[l.id] = p;
+  });
+  MAP_PATHS.forEach(l=>{
+    const r = GROUPS_META[l.id]; if(!r) return;
+    const g = document.createElementNS(SVGNS,'g');
+    g.setAttribute('class','cnt-bubble');
+    const small = false;
+    const name = document.createElementNS(SVGNS,'text');
+    name.setAttribute('x', r.cx); name.setAttribute('y', r.cy - (small?11:14));
+    name.setAttribute('fill','#DCEBF7'); name.setAttribute('font-size', small?11:14);
+    name.setAttribute('font-weight','700');
+    name.setAttribute('style','paint-order:stroke; stroke:#0D1B3E; stroke-width:2.5px; stroke-linejoin:round;');
+    name.textContent = r.ar;
+    const circ = document.createElementNS(SVGNS,'circle');
+    circ.setAttribute('cx', r.cx); circ.setAttribute('cy', r.cy + (small?6:9));
+    circ.setAttribute('r', small?10:14);
+    circ.setAttribute('fill','#0D1B3E'); circ.setAttribute('stroke','#1EAFD9'); circ.setAttribute('stroke-width','1.6');
+    circ.setAttribute('opacity','0');
+    const num = document.createElementNS(SVGNS,'text');
+    num.setAttribute('x', r.cx); num.setAttribute('y', r.cy + (small?10:14));
+    num.setAttribute('fill','#8FF0CE'); num.setAttribute('font-size', small?11:14); num.setAttribute('font-weight','900');
+    g.appendChild(name); g.appendChild(circ); g.appendChild(num);
+    svg.appendChild(g);
+    bubbleEls[l.id] = {circ, num};
+  });
+}
+
+function lerpColor(a, b, t){
+  const pa=[parseInt(a.slice(1,3),16),parseInt(a.slice(3,5),16),parseInt(a.slice(5,7),16)];
+  const pb=[parseInt(b.slice(1,3),16),parseInt(b.slice(3,5),16),parseInt(b.slice(5,7),16)];
+  const c=pa.map((v,i)=>Math.round(v+(pb[i]-v)*t));
+  return 'rgb('+c[0]+','+c[1]+','+c[2]+')';
+}
+
+let displayedTotal = 0, totalAnim = null;
+function animateTotal(target){
+  const el = document.getElementById('totalNum');
+  if(totalAnim) clearInterval(totalAnim);
+  totalAnim = setInterval(()=>{
+    if(displayedTotal===target){ clearInterval(totalAnim); return; }
+    displayedTotal += displayedTotal<target?1:-1;
+    el.textContent = displayedTotal.toLocaleString('ar-SA');
+  }, 40);
+}
+
+function render(rows){
+  const counts = {}; let total = 0;
+  Object.keys(GROUPS_META).forEach(k=>counts[k]=0);
+  rows.forEach(v=>{
+    const g = v.region && GROUP_OF[v.region];
+    if(g && counts[g]!==undefined){ counts[g]++; total++; }
+  });
+  const max = Math.max(1, ...Object.values(counts));
+  animateTotal(total);
+  Object.entries(counts).forEach(([id,c])=>{
+    if(pathEls[id]) pathEls[id].setAttribute('fill', c===0 ? '#22415F' : lerpColor('#2E6FA8','#0EB3AE', c/max));
+    const b = bubbleEls[id];
+    if(b){
+      b.circ.setAttribute('opacity', c>0?'1':'0');
+      b.num.textContent = c>0 ? c.toLocaleString('ar-SA') : '';
+    }
+  });
+  const lb = document.getElementById('lbRows');
+  const sorted = Object.entries(counts).filter(([,c])=>c>0).sort((a,b)=>b[1]-a[1]);
+  if(sorted.length){
+    lb.innerHTML = sorted.map(([id,c])=>{
+      const pct = total? Math.round(c/total*100):0;
+      return '<div class="lb-row"><div class="nm">'+GROUPS_META[id].em+' '+GROUPS_META[id].ar+'</div>'+
+        '<div class="bar"><div class="fill" style="width:'+Math.max(4,(c/max*100))+'%"></div></div>'+
+        '<div class="ct">'+c.toLocaleString('ar-SA')+' · ٪'+pct.toLocaleString('ar-SA')+'</div></div>';
+    }).join('');
+  }
+  // top cities strip
+  const cityCounts = {};
+  rows.forEach(v=>{ if(v.city) cityCounts[v.city]=(cityCounts[v.city]||0)+1; });
+  const topCities = Object.entries(cityCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const tc = document.getElementById('topCities');
+  if(tc) tc.innerHTML = topCities.length
+    ? '🏘️ أبرز المدن: ' + topCities.map(([n,c])=>'<b style="color:#8FF0CE">'+escapeHtml(n)+'</b> ×'+c.toLocaleString('ar-SA')).join(' · ')
+    : '';
+}
+
+let tickerTimer = null;
+function announce(region, city){
+  const t = document.getElementById('ticker');
+  const r = REGIONS[region];
+  const g = GROUPS_META[GROUP_OF[region]];
+  if(!r || !g) return;
+  t.innerHTML = '<span class="t-in">🎉 صوت جديد من ' +
+    (city ? '<b style="color:#8FF0CE">'+escapeHtml(city)+'</b> <span style="color:#BFD6EA;font-weight:600">('+r.ar+' · '+g.ar+' '+g.em+')</span>'
+          : '<b style="color:#8FF0CE">منطقة '+r.ar+'</b> <span style="color:#BFD6EA;font-weight:600">('+g.ar+' '+g.em+')</span>') + '</span>';
+  if(typeof confetti==='function') confetti({particleCount:60, spread:70, origin:{y:.2}, colors:['#1EAFD9','#0EB3AE','#8FF0CE','#FFFFFF']});
+  if(tickerTimer) clearTimeout(tickerTimer);
+  tickerTimer = setTimeout(()=>{ t.innerHTML=''; }, 8000);
+}
+function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+async function startScreen(){
+  if(screenStarted) return; screenStarted = true;
+  buildMap();
+  buildQR();
+  const d = getDb();
+  if(!d) return;
+  let knownIds = null;
+  d.ref('votes').on('value', snap=>{
+    const val = snap.val() || {};
+    const rows = Object.values(val).filter(v=>v && v.region);
+    render(rows);
+    const ids = new Set(Object.keys(val));
+    if(knownIds !== null){
+      let newest = null;
+      ids.forEach(id=>{
+        if(!knownIds.has(id)){
+          const v = val[id];
+          if(v && (!newest || (v.ts||0) > (newest.ts||0))) newest = v;
+        }
+      });
+      if(newest) announce(newest.region, newest.city||null);
+    }
+    knownIds = ids;
+  }, err=>{
+    document.getElementById('dbWarn').classList.remove('hidden');
+  });
+}
+
+
+route();
+</script>
+</body>
+</html>
