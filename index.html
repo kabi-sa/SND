@@ -714,6 +714,7 @@ function getDeviceId(){
 }
 function localVotedRegion(){ try{ return localStorage.getItem('kabi_nd96_voted'); }catch(e){ return null; } }
 function markLocalVoted(region){ try{ localStorage.setItem('kabi_nd96_voted', region); }catch(e){} }
+function clearLocalVoted(){ try{ localStorage.removeItem('kabi_nd96_voted'); localStorage.removeItem('kabi_nd96_device'); }catch(e){} }
 
 /* ====== التوجيه ====== */
 const views = {landing:document.getElementById('landing'), vote:document.getElementById('vote'), voted:document.getElementById('votedState'), closed:document.getElementById('closedState'), screen:document.getElementById('screen')};
@@ -867,7 +868,7 @@ function showClosed(){
 
 async function initVote(){
   const prev = localVotedRegion();
-  if(prev){ showVoted(prev, true, null, true); }
+  if(prev){ showVoted(prev, true, null, true); }   // عرض متفائل فوري من الذاكرة المحلية
   if(voteInited) return; voteInited = true;
   try{
     if(await dbGetClosed()){ showClosed(); return; }
@@ -875,6 +876,11 @@ async function initVote(){
     if(r.ok && r.data && r.data.region){
       markLocalVoted(r.data.region);
       showVoted(r.data.region, true, r.data.city||null);
+    } else if(r.ok && prev){
+      // كان مسجّلاً محلياً لكن السجل غير موجود في القاعدة (نُظّفت الأصوات) — افتح التصويت من جديد
+      clearLocalVoted();
+      views.voted.classList.add('hidden');
+      views.vote.classList.remove('hidden');
     }
   }catch(e){}
 }
