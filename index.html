@@ -232,16 +232,16 @@
   #finale h1{font-size:min(3.6vh,32px); font-weight:900; margin:0; line-height:1.2; color:#fff;}
   #finale h1 span{color:var(--snd-glow);}
   #finale h1 + p{margin:2px 0 0; color:var(--snd-muted); font-size:min(1.6vh,15px); font-weight:600;}
-  #finale .azzana{height:min(7.5vh,58px);}
+  #finale .azzana{height:min(9.2vh,72px);}
   #finale .brand-box{height:min(3vh,26px);}
   .leaders{flex:none; display:flex; gap:min(3vw,26px); align-items:flex-end; justify-content:center;}
   .leader{display:flex; flex-direction:column; align-items:center; gap:4px;}
   .leader .ph{
-    width:min(9vh,74px); aspect-ratio:517/640; border-radius:10px; overflow:hidden;
-    border:2px solid var(--snd-green2); box-shadow:0 6px 18px rgba(0,0,0,.5), 0 0 0 3px rgba(201,144,56,.14);
+    width:min(13.5vh,112px); aspect-ratio:517/640; border-radius:12px; overflow:hidden;
+    border:2px solid var(--snd-green2); box-shadow:0 8px 22px rgba(0,0,0,.5), 0 0 0 3px rgba(201,144,56,.14);
     background:#02201B;
   }
-  .leader.center .ph{width:min(10.5vh,88px); border-color:var(--snd-gold);}
+  .leader.center .ph{width:min(15.5vh,130px); border-color:var(--snd-gold);}
   .leader .ph img{width:100%; height:100%; object-fit:cover; display:block;}
   .leader .nm{font-size:min(1.35vh,12.5px); font-weight:700; color:var(--snd-sand); max-width:150px; line-height:1.4;}
   .f-total{flex:none; font-family:'Noto Kufi Arabic'; font-size:min(2vh,19px); color:var(--snd-muted); font-weight:700;}
@@ -264,24 +264,31 @@
   .r-row.winner .rank{color:var(--snd-glow);}
   .r-row .nm{display:flex; flex-direction:column; align-items:center; gap:4px; font-family:'Noto Kufi Arabic'; font-size:min(1.7vh,15.5px); font-weight:900; color:#fff; flex:none;}
   .r-row .nm .ic{color:var(--snd-glow); width:min(3vh,24px); height:min(3vh,24px);}
-  .r-row .barcol{flex:1; width:100%; min-height:min(9vh,80px); display:flex; align-items:flex-end; justify-content:center; padding:2px 14px;}
+  .r-row .barcol{flex:1; width:100%; min-height:min(5.2vh,46px); display:flex; align-items:flex-end; justify-content:center; padding:2px 14px;}
   .r-row .barcol .track{width:100%; max-width:34px; height:100%; background:rgba(255,255,255,.07); border-radius:10px; overflow:hidden; display:flex; align-items:flex-end;}
   .r-row .barcol .fill{width:100%; height:0%; border-radius:10px 10px 0 0; background:linear-gradient(180deg,var(--snd-gold),var(--snd-green2)); transition:height 1.6s cubic-bezier(.2,.9,.3,1);}
   .r-row .pct{font-family:'Noto Kufi Arabic'; font-size:min(2.6vh,24px); font-weight:900; color:var(--snd-glow); font-variant-numeric:tabular-nums; flex:none;}
   .r-row .cnt{font-size:min(1.3vh,12.5px); color:var(--snd-muted); font-weight:600; flex:none;}
   .poem{
-    flex:none; width:100%; max-width:900px; background:rgba(8,56,48,.62); border:1px solid var(--snd-line); border-radius:14px;
-    padding:min(1.6vh,16px) min(2.2vw,24px); position:relative;
+    flex:none; width:100%; max-width:1100px; background:rgba(8,56,48,.62); border:1px solid var(--snd-line); border-radius:14px;
+    padding:min(3vh,28px) min(2.2vw,24px); position:relative; min-height:min(19vh,168px);
+    display:flex; flex-direction:column; justify-content:center; overflow:hidden;
   }
-  .poem::before{content:"❝"; position:absolute; top:-2px; right:14px; font-size:min(4vh,36px); color:var(--snd-gold); opacity:.55;}
-  .poem .verse{
-    font-family:'Noto Kufi Arabic'; font-size:min(2.6vh,24px); font-weight:800; color:#fff;
-    min-height:2.4em; display:flex; flex-direction:column; justify-content:center; gap:4px; line-height:1.75;
+  .poem-flagbg{position:absolute; inset:0; z-index:0; overflow:hidden; border-radius:inherit;}
+  .poem-flagbg canvas{position:absolute; inset:0; width:100%; height:100%; opacity:.16;}
+  .poem-content{position:relative; z-index:1;}
+  .verse-block{
+    font-family:'Noto Kufi Arabic'; font-size:min(2.8vh,26px); font-weight:800; color:#fff;
+    line-height:1.8; text-align:center; display:flex; flex-direction:column; gap:2px;
   }
-  .poem .verse.v-in{animation:verseIn 1.1s ease both;}
-  @keyframes verseIn{from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);}}
-  .poem .verse .shatr2{color:var(--snd-glow);}
-  .poem .who{font-size:min(1.3vh,12.5px); color:var(--snd-muted); font-weight:600; margin-top:6px;}
+  .verse-block .shatr2{color:var(--snd-glow); display:block;}
+  .poem-divider{
+    height:9px; width:62%; max-width:340px; margin:14px auto; border-radius:99px; opacity:.65;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='9' viewBox='0 0 36 9'%3E%3Cpath d='M9 0.5 L16 4.5 L9 8.5 L2 4.5 Z' fill='none' stroke='%232F8C5A' stroke-width='1.3'/%3E%3Crect x='7.7' y='3.4' width='2.2' height='2.2' fill='%23C99038'/%3E%3Cpath d='M27 0.5 L34 4.5 L27 8.5 L20 4.5 Z' fill='none' stroke='%23C99038' stroke-width='1.3'/%3E%3Crect x='25.7' y='3.4' width='2.2' height='2.2' fill='%232F8C5A'/%3E%3C/svg%3E");
+    background-repeat:repeat-x; background-position:center;
+  }
+  .poem::before{content:"❝"; position:absolute; top:-2px; right:14px; font-size:min(4vh,36px); color:var(--snd-gold); opacity:.55; z-index:2;}
+  .poem .who{position:relative; z-index:1; font-size:min(1.3vh,12.5px); color:var(--snd-muted); font-weight:600; margin-top:8px; text-align:center;}
   .f-controls{flex:none; display:flex; gap:12px; align-items:center;}
   .f-btn{
     display:inline-flex; align-items:center; gap:7px;
@@ -452,8 +459,15 @@
   <div class="f-total fg">شارك <b id="fTotal">٠</b> كابيانز من مختلف مناطق المملكة</div>
   <div class="results fg" id="fResults"></div>
   <div class="poem fg">
-    <div class="verse" id="poemVerse"></div>
-    <div class="who">— غازي القصيبي، «أجل نحن الحجاز»</div>
+    <div class="poem-flagbg" id="poemFlagBg"></div>
+    <div class="poem-content">
+      <div class="verse-block">
+        <span>أَجَلْ نَحْنُ الْحِجَازُ وَنَحْنُ نَجْدُ</span>
+        <span class="shatr2">هُنَا مَجْدٌ لَنَا وَهُنَاكَ مَجْدُ</span>
+      </div>
+      <div class="poem-divider"></div>
+      <div class="who">— غازي القصيبي، «أجل نحن الحجاز»</div>
+    </div>
   </div>
   <div class="f-controls fg">
     <button class="f-btn" id="fSoundBtn"></button>
@@ -566,13 +580,7 @@ function cityMatches(cityName, region, q){
   return {starts: c.startsWith(q), has: c.includes(q) || r.includes(q)};
 }
 
-const POEM = [
-  ["أَجَلْ نَحْنُ الْحِجَازُ وَنَحْنُ نَجْدُ","هُنَا مَجْدٌ لَنَا وَهُنَاكَ مَجْدُ"],
-  ["وَنَحْنُ جَزِيرَةُ الْعَرَبِ افْتَدَاهَا","وَيُفْدِيهَا غَطَارِفَةٌ وَأَسَدُ"],
-  ["وَنَحْنُ شِمَالُنَا كَبِرٌ أَشَمٌّ","وَنَحْنُ جَنُوبُنَا كَبِرٌ أَشَدُ"],
-  ["وَنَحْنُ عَسِيرٌ مَطْلَبُهَا عَسِيرٌ","وَدُونَ جِبَالِهَا بَرْقٌ وَرَعْدُ"],
-  ["وَنَحْنُ الشَّاطِئُ الشَّرْقِيُّ بَحْرٌ","وَأَصْدَافٌ وَأَسْيَافٌ وَحَشْدُ"]
-];
+
 
 
 /* ====== العلم المرفرف (محرك قماش Canvas بموجة متدحرجة وتظليل) ====== */
@@ -1162,7 +1170,6 @@ async function startScreen(){
 }
 
 /* ====== الختام ====== */
-let poemTimer = null, poemIdx = 0;
 document.getElementById('endBtn').addEventListener('click', async ()=>{
   if(!confirm('إنهاء التصويت وعرض النتائج النهائية؟')) return;
   try{ await dbSetClosed(true); }catch(e){}
@@ -1180,9 +1187,9 @@ function openFinale(){
   if(!f.classList.contains('hidden')) return;
   f.classList.remove('hidden');
   mountFlags();
+  mountPoemFlagBg();
   fillFinale();
   startFinaleMusic();
-  startPoem();
   if(typeof confetti==='function'){
     const c = ['#0E6B44','#2F8C5A','#C99038','#E0B060','#F0E2C0'];
     confetti({particleCount:180, spread:100, origin:{y:.4}, colors:c});
@@ -1193,7 +1200,6 @@ function openFinale(){
 function closeFinale(){
   document.getElementById('finale').classList.add('hidden');
   stopFinaleMusic();
-  if(poemTimer){ clearInterval(poemTimer); poemTimer=null; }
 }
 function fillFinale(){
   const {counts, total} = computeCounts(latestRows);
@@ -1220,18 +1226,40 @@ function fillFinale(){
     box.querySelectorAll('.fill').forEach(el=> el.style.height = el.dataset.h + '%');
   }, 60); });
 }
-function startPoem(){
-  const el = document.getElementById('poemVerse');
-  poemIdx = 0;
-  const show = ()=>{
-    const [s1,s2] = POEM[poemIdx % POEM.length]; poemIdx++;
-    el.classList.remove('v-in'); void el.offsetWidth;
-    el.innerHTML = '<div>'+s1+'</div><div class="shatr2">'+s2+'</div>';
-    el.classList.add('v-in');
-  };
-  show();
-  if(poemTimer) clearInterval(poemTimer);
-  poemTimer = setInterval(show, 7000);
+function mountPoemFlagBg(){
+  const host = document.getElementById('poemFlagBg');
+  if(!host || host.dataset.mounted) return;
+  host.dataset.mounted = '1';
+  const dpr = Math.min(2, window.devicePixelRatio||1);
+  const cv = document.createElement('canvas');
+  host.appendChild(cv);
+  function size(){
+    const w = host.clientWidth, h = host.clientHeight;
+    cv.width = Math.max(1, Math.round(w*dpr)); cv.height = Math.max(1, Math.round(h*dpr));
+  }
+  size();
+  window.addEventListener('resize', size);
+  const ctx = cv.getContext('2d');
+  const phase = Math.random()*6.28;
+  loadFlagImg().then(img=>{
+    (function tick(ts){
+      if(!host.isConnected) return;
+      const t = (ts||0)/1000;
+      const w = cv.width, h = cv.height;
+      ctx.clearRect(0,0,w,h);
+      const k = (Math.PI*2*1.4)/w, om = Math.PI*2/2.2;
+      const slice = Math.max(1, Math.round(w/160));
+      const gust = 0.8 + 0.2*Math.sin(t*0.55 + phase);
+      const amp = h*0.05;
+      for(let x=0;x<w;x+=slice){
+        const th = k*x + om*t + phase;
+        const dy = amp*gust*(Math.sin(th) + 0.25*Math.sin(2.2*th+1.1));
+        const sx = x/w*img.width, sw = (slice+1)/w*img.width;
+        ctx.drawImage(img, sx, 0, sw, img.height, x, dy, slice+1, h);
+      }
+      requestAnimationFrame(tick);
+    })();
+  });
 }
 
 mountIcons();
