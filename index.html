@@ -692,7 +692,7 @@ function playVoteChime(){
     const a = new Audio('vote-chime.mp3');
     a.volume = 0.9;
     let handled = false;
-    const CAP_MS = 3000;   // أول 3 ثوانٍ فقط من الملف، مهما كان طول الملف الفعلي
+    const CAP_MS = 5000;   // أول 5 ثوانٍ فقط من الملف، مهما كان طول الملف الفعلي
     let capTimer = null;
     const stopAtCap = ()=>{ if(capTimer) return; capTimer = setTimeout(()=>{ try{ a.pause(); }catch(e){} }, CAP_MS); };
     a.addEventListener('play', stopAtCap, {once:true});
