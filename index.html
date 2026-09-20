@@ -300,7 +300,8 @@
   }
   .poem::before{content:"❝"; position:absolute; top:-2px; right:14px; font-size:min(4vh,36px); color:var(--snd-gold); opacity:.55; z-index:2;}
   .poem .who{position:relative; z-index:1; font-size:min(1.3vh,12.5px); color:var(--snd-muted); font-weight:600; margin-top:8px; text-align:center;}
-  .poem-title{position:relative; z-index:1; font-family:'Noto Kufi Arabic'; font-size:min(1.9vh,17px); font-weight:800; color:var(--snd-gold); text-align:center; margin-top:6px;}
+  .poem-title{position:relative; z-index:1; font-family:'Noto Kufi Arabic'; font-size:min(1.9vh,17px); font-weight:800; color:var(--snd-gold); text-align:center; margin-top:3px; opacity:0; transition:opacity .6s ease;}
+  .poem-title.v-show{opacity:1;}
   .f-controls{flex:none; display:flex; gap:12px; align-items:center;}
   .f-btn{
     display:inline-flex; align-items:center; gap:7px;
@@ -1219,10 +1220,20 @@ document.getElementById('fSoundBtn').addEventListener('click', ()=> setSound(!so
 function startPoemCycle(){
   const verses = Array.from(document.querySelectorAll('#poemStage .verse-block'));
   const divider = document.getElementById('poemDivider');
+  const title = document.getElementById('poemTitle');
   if(!verses.length) return;
   let i = 0;
-  function show(idx){ verses.forEach(v=>v.classList.remove('v-show')); if(divider) divider.classList.remove('v-show'); verses[idx].classList.add('v-show'); }
-  function showDivider(){ verses.forEach(v=>v.classList.remove('v-show')); if(divider) divider.classList.add('v-show'); }
+  function show(idx){
+    verses.forEach(v=>v.classList.remove('v-show'));
+    if(divider) divider.classList.remove('v-show');
+    if(title) title.classList.remove('v-show');
+    verses[idx].classList.add('v-show');
+  }
+  function showDivider(){
+    verses.forEach(v=>v.classList.remove('v-show'));
+    if(divider) divider.classList.add('v-show');
+    if(title) title.classList.add('v-show');   // العنوان يظهر فقط هنا، بعد آخر بيت مباشرة
+  }
   function tick(){
     if(i < verses.length){ show(i); i++; window._poemTimer = setTimeout(tick, 4000); }
     else { showDivider(); i = 0; window._poemTimer = setTimeout(tick, 2400); }
