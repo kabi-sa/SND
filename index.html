@@ -342,12 +342,12 @@
     .r-row .nm{width:112px;}
     .r-row .cnt{display:none;}
   }
-</style>
 #poemStage{position:relative; min-height:120px;}
 .verse-block{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .8s ease;}
 .verse-block.v-show{opacity:1; pointer-events:auto;}
 #poemDivider{opacity:0; transition:opacity .6s ease;}
 #poemDivider.v-show{opacity:.75;}
+</style>
 </head>
 <body>
 
@@ -1228,7 +1228,6 @@ function startPoemCycle(){
 }
 function stopPoemCycle(){ if(window._poemTimer) clearTimeout(window._poemTimer); }
 
-</script>
 function openFinale(){
   const f = document.getElementById('finale');
   if(!f.classList.contains('hidden')) return;
