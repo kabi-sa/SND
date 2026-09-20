@@ -1305,13 +1305,14 @@ function mountPoemFlagBg(){
       const w = cv.width, h = cv.height;
       if(w>1 && h>1){
         ctx.clearRect(0,0,w,h);
-        const scale = Math.min(w/img.width, h/img.height) * 0.94;
+        const scale = Math.max(w/img.width, h/img.height);
         const drawW = img.width*scale, drawH = img.height*scale;
-        const drawX = (w-drawW)/2, drawY = (h-drawH)/2;
+        const SHAHADA_ANCHOR = 0.38;
+        const drawX = (w-drawW)/2, drawY = h/2 - drawH*SHAHADA_ANCHOR;
         const k = (Math.PI*2*1.5)/drawW, om = Math.PI*2/2.2;
         const slice = Math.max(1, Math.round(drawW/140));
         const gust = 0.8 + 0.2*Math.sin(t*0.55 + phase);
-        const amp = drawH*0.03;
+        const amp = drawH*0.018;
         for(let x=0; x<drawW; x+=slice){
           const th = k*x + om*t + phase;
           const dy = amp*gust*(Math.sin(th) + 0.25*Math.sin(2.2*th+1.1));
