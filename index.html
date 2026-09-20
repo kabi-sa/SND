@@ -250,12 +250,12 @@
   .results{
     flex:1 1 auto; min-height:0; width:100%; max-width:1100px;
     display:grid; grid-template-columns:repeat(5, 1fr); gap:min(1.4vw,14px);
-    align-items:stretch;
+    align-items:start; align-content:center;
   }
   .r-row{
-    display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:6px;
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:5px;
     background:var(--snd-card); border:1px solid var(--snd-line); border-radius:14px;
-    padding:min(1.6vh,14px) 6px 10px; position:relative; overflow:hidden;
+    padding:min(1.1vh,10px) 6px 8px; position:relative; overflow:hidden; max-height:min(26vh,220px);
     animation:rise .7s cubic-bezier(.2,1.2,.3,1) both;
   }
   .r-row.winner{border-color:var(--snd-gold); box-shadow:0 0 26px rgba(224,176,96,.3); background:linear-gradient(180deg, rgba(201,144,56,.16), var(--snd-card));}
@@ -264,7 +264,7 @@
   .r-row.winner .rank{color:var(--snd-glow);}
   .r-row .nm{display:flex; flex-direction:column; align-items:center; gap:4px; font-family:'Noto Kufi Arabic'; font-size:min(1.7vh,15.5px); font-weight:900; color:#fff; flex:none;}
   .r-row .nm .ic{color:var(--snd-glow); width:min(3vh,24px); height:min(3vh,24px);}
-  .r-row .barcol{flex:1; width:100%; min-height:min(5.2vh,46px); display:flex; align-items:flex-end; justify-content:center; padding:2px 14px;}
+  .r-row .barcol{flex:none; width:100%; height:min(3.4vh,30px); display:flex; align-items:flex-end; justify-content:center; padding:2px 14px;}
   .r-row .barcol .track{width:100%; max-width:34px; height:100%; background:rgba(255,255,255,.07); border-radius:10px; overflow:hidden; display:flex; align-items:flex-end;}
   .r-row .barcol .fill{width:100%; height:0%; border-radius:10px 10px 0 0; background:linear-gradient(180deg,var(--snd-gold),var(--snd-green2)); transition:height 1.6s cubic-bezier(.2,.9,.3,1);}
   .r-row .pct{font-family:'Noto Kufi Arabic'; font-size:min(2.6vh,24px); font-weight:900; color:var(--snd-glow); font-variant-numeric:tabular-nums; flex:none;}
@@ -280,8 +280,19 @@
   .verse-block{
     font-family:'Noto Kufi Arabic'; font-size:min(2.8vh,26px); font-weight:800; color:#fff;
     line-height:1.8; text-align:center; display:flex; flex-direction:column; gap:2px;
+    opacity:0; position:absolute; inset:0; align-items:center; justify-content:center;
+    pointer-events:none; transition:opacity .8s ease;
   }
+  .verse-block.v-show{opacity:1; position:relative; pointer-events:auto;}
   .verse-block .shatr2{color:var(--snd-glow); display:block;}
+  #poemStage{position:relative; min-height:min(9vh,80px);}
+  .poem-divider{
+    height:9px; width:62%; max-width:340px; margin:14px auto; border-radius:99px;
+    opacity:0; transition:opacity .6s ease;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='9' viewBox='0 0 36 9'%3E%3Cpath d='M9 0.5 L16 4.5 L9 8.5 L2 4.5 Z' fill='none' stroke='%232F8C5A' stroke-width='1.3'/%3E%3Crect x='7.7' y='3.4' width='2.2' height='2.2' fill='%23C99038'/%3E%3Cpath d='M27 0.5 L34 4.5 L27 8.5 L20 4.5 Z' fill='none' stroke='%23C99038' stroke-width='1.3'/%3E%3Crect x='25.7' y='3.4' width='2.2' height='2.2' fill='%232F8C5A'/%3E%3C/svg%3E");
+    background-repeat:repeat-x; background-position:center;
+  }
+  .poem-divider.v-show{opacity:.75;}
   .poem-divider{
     height:9px; width:62%; max-width:340px; margin:14px auto; border-radius:99px; opacity:.65;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='9' viewBox='0 0 36 9'%3E%3Cpath d='M9 0.5 L16 4.5 L9 8.5 L2 4.5 Z' fill='none' stroke='%232F8C5A' stroke-width='1.3'/%3E%3Crect x='7.7' y='3.4' width='2.2' height='2.2' fill='%23C99038'/%3E%3Cpath d='M27 0.5 L34 4.5 L27 8.5 L20 4.5 Z' fill='none' stroke='%23C99038' stroke-width='1.3'/%3E%3Crect x='25.7' y='3.4' width='2.2' height='2.2' fill='%232F8C5A'/%3E%3C/svg%3E");
@@ -332,6 +343,11 @@
     .r-row .cnt{display:none;}
   }
 </style>
+#poemStage{position:relative; min-height:120px;}
+.verse-block{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .8s ease;}
+.verse-block.v-show{opacity:1; pointer-events:auto;}
+#poemDivider{opacity:0; transition:opacity .6s ease;}
+#poemDivider.v-show{opacity:.75;}
 </head>
 <body>
 
@@ -458,17 +474,33 @@
   </div>
   <div class="f-total fg">شارك <b id="fTotal">٠</b> كابيانز من مختلف مناطق المملكة</div>
   <div class="results fg" id="fResults"></div>
-  <div class="poem fg">
+<div class="poem fg">
     <div class="poem-flagbg" id="poemFlagBg"></div>
-    <div class="poem-content">
+    <div id="poemStage">
       <div class="verse-block">
-        <span>أَجَلْ نَحْنُ الْحِجَازُ وَنَحْنُ نَجْدُ</span>
-        <span class="shatr2">هُنَا مَجْدٌ لَنَا وَهُنَاكَ مَجْدُ</span>
+        <span>...أَجَلْ نَحْنُ الْحِجَازُ وَنَحْنُ نَجْدُ...</span>
+        <span class="shatr2">...هُنَا مَجْدٌ لَنَا وَهُنَاكَ مَجْدُ...</span>
       </div>
-      <div class="poem-divider"></div>
-      <div class="who">— غازي القصيبي، «أجل نحن الحجاز»</div>
+      <div class="verse-block">
+        <span>...وَنَحْنُ جَزِيرَةُ الْعَرَبِ افْتَدَاهَا...</span>
+        <span class="shatr2">...وَيُفْدِيهَا غَطَارِفَةٌ وَأَسَدُ...</span>
+      </div>
+ <div class="verse-block">
+        <span>...وَنَحْنُ شِمَالُنَا كَبِرٌ أَشَمٌّ...</span>
+        <span class="shatr2">...وَنَحْنُ جَنُوبُنَا كَبِرٌ أَشَدُ...</span>
     </div>
+ <div class="verse-block">
+        <span>...وَنَحْنُ عَسِيرٌ مَطْلَبُهَا عَسِيرٌ...</span>
+        <span class="shatr2">...وَدُونَ جِبَالِهَا بَرْقٌ وَرَعْدُ...</span>
+    </div>
+ <div class="verse-block">
+        <span>...وَنَحْنُ الشَّاطِئُ الشَّرْقِيُّ بَحْرٌ...</span>
+        <span class="shatr2">...وَأَصْدَافٌ وَأَسْيَافٌ وَحَشْدُ...</span>
+    </div>
+    <div class="poem-divider" id="poemDivider"></div>
+    <div class="who">— غازي القصيبي، «أجل نحن الحجاز»</div>
   </div>
+
   <div class="f-controls fg">
     <button class="f-btn" id="fSoundBtn"></button>
     <button class="f-btn" id="resumeBtn"><span data-ic="undo,15"></span> استئناف التصويت</button>
@@ -1181,15 +1213,33 @@ document.getElementById('resumeBtn').addEventListener('click', async ()=>{
 });
 document.getElementById('soundBtn').addEventListener('click', ()=> setSound(!soundOn));
 document.getElementById('fSoundBtn').addEventListener('click', ()=> setSound(!soundOn));
+function startPoemCycle(){
+  const verses = Array.from(document.querySelectorAll('#poemStage .verse-block'));
+  const divider = document.getElementById('poemDivider');
+  if(!verses.length) return;
+  let i = 0;
+  function show(idx){ verses.forEach(v=>v.classList.remove('v-show')); if(divider) divider.classList.remove('v-show'); verses[idx].classList.add('v-show'); }
+  function showDivider(){ verses.forEach(v=>v.classList.remove('v-show')); if(divider) divider.classList.add('v-show'); }
+  function tick(){
+    if(i < verses.length){ show(i); i++; window._poemTimer = setTimeout(tick, 4000); }
+    else { showDivider(); i = 0; window._poemTimer = setTimeout(tick, 2400); }
+  }
+  tick();
+}
+function stopPoemCycle(){ if(window._poemTimer) clearTimeout(window._poemTimer); }
 
+</script>
 function openFinale(){
   const f = document.getElementById('finale');
   if(!f.classList.contains('hidden')) return;
   f.classList.remove('hidden');
   mountFlags();
   mountPoemFlagBg();
+startPoemCycle();
   fillFinale();
   startFinaleMusic();
+  const vb = document.querySelector('.verse-block');
+  if(vb){ vb.classList.remove('v-in'); void vb.offsetWidth; vb.classList.add('v-in'); }
   if(typeof confetti==='function'){
     const c = ['#0E6B44','#2F8C5A','#C99038','#E0B060','#F0E2C0'];
     confetti({particleCount:180, spread:100, origin:{y:.4}, colors:c});
@@ -1200,6 +1250,7 @@ function openFinale(){
 function closeFinale(){
   document.getElementById('finale').classList.add('hidden');
   stopFinaleMusic();
+stopPoemCycle();
 }
 function fillFinale(){
   const {counts, total} = computeCounts(latestRows);
@@ -1247,15 +1298,19 @@ function mountPoemFlagBg(){
       const t = (ts||0)/1000;
       const w = cv.width, h = cv.height;
       ctx.clearRect(0,0,w,h);
-      const k = (Math.PI*2*1.4)/w, om = Math.PI*2/2.2;
-      const slice = Math.max(1, Math.round(w/160));
+      /* ملء الصندوق مع الحفاظ على أبعاد العلم الصحيحة (cover) بدل تمديده */
+      const scale = Math.max(w/img.width, h/img.height) * 1.06; // زيادة طفيفة تستوعب تموّج الرفرفة
+      const drawW = img.width*scale, drawH = img.height*scale;
+      const drawX = (w-drawW)/2, drawY = (h-drawH)/2;
+      const k = (Math.PI*2*1.5)/drawW, om = Math.PI*2/2.2;
+      const slice = Math.max(1, Math.round(drawW/140));
       const gust = 0.8 + 0.2*Math.sin(t*0.55 + phase);
-      const amp = h*0.05;
-      for(let x=0;x<w;x+=slice){
+      const amp = drawH*0.045;
+      for(let x=0; x<drawW; x+=slice){
         const th = k*x + om*t + phase;
         const dy = amp*gust*(Math.sin(th) + 0.25*Math.sin(2.2*th+1.1));
-        const sx = x/w*img.width, sw = (slice+1)/w*img.width;
-        ctx.drawImage(img, sx, 0, sw, img.height, x, dy, slice+1, h);
+        const sx = x/drawW*img.width, sw = (slice+1)/drawW*img.width;
+        ctx.drawImage(img, sx, 0, sw, img.height, drawX+x, drawY+dy, slice+1, drawH);
       }
       requestAnimationFrame(tick);
     })();
