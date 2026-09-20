@@ -271,7 +271,7 @@
   .r-row .cnt{font-size:min(1.3vh,12.5px); color:var(--snd-muted); font-weight:600; flex:none;}
   .poem{
     flex:none; width:100%; max-width:1100px; background:rgba(8,56,48,.62); border:1px solid var(--snd-line); border-radius:14px;
-    padding:min(3vh,28px) min(2.2vw,24px); position:relative; min-height:min(19vh,168px);
+    padding:min(1.8vh,16px) min(2.2vw,24px); position:relative; min-height:min(13vh,118px);
     display:flex; flex-direction:column; justify-content:center; overflow:hidden;
   }
   .poem-flagbg{position:absolute; inset:0; z-index:0; overflow:hidden; border-radius:inherit;}
@@ -308,6 +308,7 @@
     font-size:12px; font-weight:700; padding:6px 14px; border-radius:999px; cursor:pointer;
   }
   .f-btn:hover{color:#fff; border-color:var(--snd-gold);}
+  .f-btn-icon{width:38px; height:38px; padding:0; justify-content:center;}
   @media (max-width:900px){
     .s-top{display:flex; flex-wrap:wrap; justify-content:center; gap:12px 18px;}
     .s-titlewrap{order:3; flex-basis:100%; overflow:visible;}
@@ -504,8 +505,8 @@
   </div>
 
   <div class="f-controls fg">
-    <button class="f-btn" id="fSoundBtn"></button>
-    <button class="f-btn" id="resumeBtn"><span data-ic="undo,15"></span> استئناف التصويت</button>
+    <button class="f-btn f-btn-icon" id="fSoundBtn" title="الصوت"></button>
+    <button class="f-btn f-btn-icon" id="resumeBtn" title="استئناف التصويت"><span data-ic="undo,17"></span></button>
   </div>
 </div>
 
@@ -777,7 +778,7 @@ function stopFinaleMusic(){
 function setSound(on){
   soundOn = on;
   document.getElementById('soundBtn').innerHTML = ic(on?'sndon':'sndoff', 16);
-  document.getElementById('fSoundBtn').innerHTML = ic(on?'sndon':'sndoff', 15) + ' الصوت';
+  document.getElementById('fSoundBtn').innerHTML = ic(on?'sndon':'sndoff', 17); document.getElementById('fSoundBtn').title = on?'كتم الصوت':'تشغيل الصوت';
   if(!on){ stopFinaleMusic(); }
   else if(!document.getElementById('finale').classList.contains('hidden')) startFinaleMusic();
 }
@@ -1285,33 +1286,38 @@ function mountPoemFlagBg(){
   const dpr = Math.min(2, window.devicePixelRatio||1);
   const cv = document.createElement('canvas');
   host.appendChild(cv);
+  const ctx = cv.getContext('2d');
   function size(){
     const w = host.clientWidth, h = host.clientHeight;
-    cv.width = Math.max(1, Math.round(w*dpr)); cv.height = Math.max(1, Math.round(h*dpr));
+    if(w<2 || h<2) return;
+    const nw = Math.max(1, Math.round(w*dpr)), nh = Math.max(1, Math.round(h*dpr));
+    if(cv.width!==nw) cv.width = nw;
+    if(cv.height!==nh) cv.height = nh;
   }
   size();
-  window.addEventListener('resize', size);
-  const ctx = cv.getContext('2d');
+  if(window.ResizeObserver){ new ResizeObserver(size).observe(host); }
+  else{ window.addEventListener('resize', size); requestAnimationFrame(size); setTimeout(size, 120); }
   const phase = Math.random()*6.28;
   loadFlagImg().then(img=>{
     (function tick(ts){
       if(!host.isConnected) return;
       const t = (ts||0)/1000;
       const w = cv.width, h = cv.height;
-      ctx.clearRect(0,0,w,h);
-      /* ملء الصندوق مع الحفاظ على أبعاد العلم الصحيحة (cover) بدل تمديده */
-      const scale = Math.max(w/img.width, h/img.height) * 1.06; // زيادة طفيفة تستوعب تموّج الرفرفة
-      const drawW = img.width*scale, drawH = img.height*scale;
-      const drawX = (w-drawW)/2, drawY = (h-drawH)/2;
-      const k = (Math.PI*2*1.5)/drawW, om = Math.PI*2/2.2;
-      const slice = Math.max(1, Math.round(drawW/140));
-      const gust = 0.8 + 0.2*Math.sin(t*0.55 + phase);
-      const amp = drawH*0.045;
-      for(let x=0; x<drawW; x+=slice){
-        const th = k*x + om*t + phase;
-        const dy = amp*gust*(Math.sin(th) + 0.25*Math.sin(2.2*th+1.1));
-        const sx = x/drawW*img.width, sw = (slice+1)/drawW*img.width;
-        ctx.drawImage(img, sx, 0, sw, img.height, drawX+x, drawY+dy, slice+1, drawH);
+      if(w>1 && h>1){
+        ctx.clearRect(0,0,w,h);
+        const scale = Math.min(w/img.width, h/img.height) * 0.94;
+        const drawW = img.width*scale, drawH = img.height*scale;
+        const drawX = (w-drawW)/2, drawY = (h-drawH)/2;
+        const k = (Math.PI*2*1.5)/drawW, om = Math.PI*2/2.2;
+        const slice = Math.max(1, Math.round(drawW/140));
+        const gust = 0.8 + 0.2*Math.sin(t*0.55 + phase);
+        const amp = drawH*0.03;
+        for(let x=0; x<drawW; x+=slice){
+          const th = k*x + om*t + phase;
+          const dy = amp*gust*(Math.sin(th) + 0.25*Math.sin(2.2*th+1.1));
+          const sx = x/drawW*img.width, sw = (slice+1)/drawW*img.width;
+          ctx.drawImage(img, sx, 0, sw, img.height, drawX+x, drawY+dy, slice+1, drawH);
+        }
       }
       requestAnimationFrame(tick);
     })();
